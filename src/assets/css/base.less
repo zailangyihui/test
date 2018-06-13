@@ -1,0 +1,95 @@
+*,  
+::before,  
+::after{  
+    margin: 0;  
+    padding: 0;
+    /*清除移动端默认的 点击高亮效果*/  
+    -webkit-tap-highlight-color: transparent;  
+    /*设置所有的都是以边框开始计算宽度 百分比*/  
+    -webkit-box-sizing: border-box;  
+    box-sizing: border-box;  
+}
+html{font-family: "Microsoft YaHei", Arial, sans-serif; font-size: 62.5%; /* 10 ÷ 16 × 100% = 62.5% */ }
+body{font-size: 1.2rem; color: #333; }
+html, body, form, fieldset, p, div, h1, h2, h3, h4, h5, h6 {-webkit-text-size-adjust:none;}/*阻止旋转屏幕时自动调整字体大小*/  
+h1{font-size:24px;}  
+h2{font-size:22px;}  
+h3{font-size:18px;}
+input::-webkit-input-speech-button {display:none}  
+table {border-collapse:collapse;border-spacing:0;}  
+th {text-align:inherit;}  
+fieldset,img {border:none;}  
+abbr,acronym {border:none;font-variant:normal;}  
+del {text-decoration:line-through;}  
+ol,ul {list-style:none;}  
+caption,th {text-align:left;}  
+sub,sup {font-size:75%;line-height:0;position:relative;vertical-align:baseline;}  
+sup {top:-0.5em;}  
+sub {bottom:-0.25em;}  
+ins,a,a:hover {text-decoration:none;} 
+a,a:hover{transition:background 0.5s linear;-webkit-transition:background 0.5s linear;-moz-transition:background 0.5s linear;-o-transition:background 0.5s linear;}
+a:focus,*:focus {outline:none;}  
+a{color: #333; }
+img{ border:none;vertical-align:middle;max-width:100%;}
+input{border: none; outline: none; -webkit-appearance: none; border-radius:0; }/*清除移动端默认的表单样式*/ 
+textarea{resize:none;}
+input::-webkit-input-placeholder{color:#F0F0F0;}  
+textarea::-webkit-input-placeholder{color:#F0F0F0;}  
+p{line-height:22px;}  
+ul,ol,li{list-style: none; }
+em,i{font-style:normal;}
+
+//color
+@yellow: #FEFCEC;
+@green: #2BA245;
+@blue: #20a0ff;
+@red: #FF0000;
+@orange: #FF8019;
+@white: #ffffff;
+@black: #000000;
+@black2: #1D323D;
+@gray: #666666;
+
+.w (@count: 10%) { width: @count; }
+.h (@count: 10%) { height: @count; }
+.m(@count: 0) {margin: @count;}
+.mt(@count: 0) { margin-top: @count; }
+.mr(@count: 0) { margin-right: @count; }
+.mb(@count: 0) { margin-bottom: @count; }
+.ml(@count: 0) { margin-left: @count; }
+.p(@count: 0) {padding: @count;}
+.pt(@count: 0) { padding-top: @count; }
+.pr(@count: 0) { padding-right: @count; }
+.pb(@count: 0) { padding-bottom: @count; }
+.pl(@count: 0) { padding-left: @count; }
+
+.lh(@count: 16px) { line-height: @count; }
+.fs (@fs: 10px) { font-size: @fs; }
+.toe {overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bdr (@count: 3px) { border-radius: @count;} //圆角
+.bs (@x: 0px; @y: 0px; @blur: 10px; @color: @black ) { box-shadow: @arguments; } //阴影
+
+/* 常用 */
+.rel {position: relative;}.abs { position: absolute; }.fix { position: fixed; }
+.left,.fl {float: left;} .right,.fr {float: right;}.flex{ display: -webkit-flex; display: flex;justify-content: space-between; flex-wrap: wrap;}
+.show,.db {display: block;} .hide,.dn {display: none;} .dib{display: inline-block;}.dt{display:table-cell;} .bsbb { box-sizing: border-box; }
+.tl {text-align: left;}.tc{text-align: center;}.tr{text-align: right;} .del {text-decoration: line-through;}.fb{font-weight: bold;}
+.center{margin: 0 auto; }.vm{vertical-align: middle;}.ovh{overflow-y: hidden;}
+.noSelect {-webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; }
+
+/* 清除浮动 */
+.clearfix:before, .clearfix:after {content: ""; display: table; }
+.clearfix:after {clear: both}
+.clearfix {zoom: 1}
+
+/* 网格 */
+.grid {display: flex; flex-wrap: wrap; width: 100%; box-sizing: border-box; 
+    .grid[vertical-align="top"], .grid[align="top"] {-webkit-box-align: start; align-items: flex-start; }
+    .grid[vertical-align="bottom"], .grid[align="bottom"] {-webkit-box-align: end; align-items: flex-end; }
+    .grid[vertical-align="center"], .grid[align="center"] {-webkit-box-align: center; align-items: center; text-align: inherit; }
+}
+.grid-cell {flex: auto; display: block; width: 100%; box-sizing: border-box; 
+    .grid-cell[vertical-align="top"], .grid-cell[align="top"] {align-self: flex-start; }
+    .grid-cell[vertical-align="bottom"], .grid-cell[align="bottom"] {align-self: flex-end; }
+    .grid-cell[vertical-align="center"], .grid-cell[align="center"] {-webkit-align-self: center; text-align: inherit; }
+}

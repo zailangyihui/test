@@ -15,17 +15,6 @@ Vue.config.productionTip = false
 Vue.use(ElementUI);
 
 /* eslint-disable no-new */
-
-//router.beforeEach((to, from, next) => {
-//if (to.fullPath !== '/') {
-//  next({
-//    path: '/'
-//  })
-//  return
-//}
-//next()
-//})
-
 new Vue({
   el: '#app',
   router,
@@ -35,24 +24,3 @@ new Vue({
   render: h => h(App)
 })
 
-//router.beforeEach((to, from, next) => {
-//window.scrollTo(0, 0)
-//console.log(1234)
-//if (!to.meta.requiresAuth) {
-//  if (!store.state.collectItems.bAuth) {
-//    next({
-//      path: '/'
-//      // query: { redirect: to.fullPath }
-//    })
-//  } else {
-//    next()
-//  }
-//} else {
-//  if (store.state.collectItems.bAuth && to.fullPath === '/') {
-//    console.log()
-//    next(false)
-//    return
-//  }
-//  next()
-//}
-//})

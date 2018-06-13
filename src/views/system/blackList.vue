@@ -56,7 +56,6 @@
 </template>
 
 <script>
-	import common from '../../common/js/common.js'
 	export default {
 		data() {
 			return {

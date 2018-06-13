@@ -4,7 +4,6 @@
 
 const path = require('path')
 //const url = "http://45.120.44.31:12345"
-const url = "http://192.168.0.16:3000"
 module.exports = {
   dev: {
 
@@ -14,19 +13,17 @@ module.exports = {
     proxyTable: {},
 
     // Various Dev Server settings
-    host: '192.168.0.124', // can be overwritten by process.env.HOST
+    host: '192.168.0.168', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
-		proxyTable: {
-      '/': {
-        target: url,
-        pathRewrite: {
-          '^/': '/'
+	proxyTable: {
+        '/': {
+            target: "http://192.168.0.124:3000",
+            pathRewrite: { '^/': '/' }
         }
-      }
     },
     
     /**

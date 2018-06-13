@@ -1,21 +1,32 @@
 // 这个 getter 函数会返回 state 的值
-
-
 export const env = state=>state.env
-export const ajaxerror = state=>state.ajaxerror
-export const quit = state=>state.quit
-export const rid = state=>state.rid
-export const passageway = state=>state.passageway
 export const user = state=>state.user
-export const hongbao = state=>state.hongbao
-/*export const chat = (state)=> {
-    let betList = []
-    state.chat.sessions.forEach(function(item){
-        betList.push(item)
+export const theme = state=>state.theme
+export const asideState = state=>state.asideState
+export const topMenus = (state) => {
+    return state.menus.map((item)=>{
+    	return {
+    		id: item.id,
+    		text: item.text,
+    		checked: item.checked
+    	}
     })
-    return betList.sort(Util.sortBy('time', false))
-}*/
-export const payurl = state => state.payurl
-export const load = state => state.load
-export const betIndex = state=>state.betIndex
-export const betHistory = state=>state.betHistory
+}
+export const leftMenus = (state) => {
+	if(!state.menus.length) return;
+	let menus = state.menus.find(item => item.id === state.currentTopMenu)
+	if(!menus) menus = state.menus[0]
+	return menus.children.map((item) => {
+		return {
+			id: item.id,
+			pid: item.pid,
+			text: item.text,
+			children: item.children,
+		}
+	})
+}
+export const navi = state=>state.navi
+export const currentNavi = state=>state.currentNavi
+export const currentLeftMenu = state=>state.currentLeftMenu
+
+

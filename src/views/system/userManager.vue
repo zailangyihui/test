@@ -1,37 +1,7 @@
 <template>
 	<section :class="isopen ? '' : 'close'">
-		<div class="aside">
-			<div class="aside_content">
-				<div class="left-header litem" :class="selected ? 'active' : ''" @click="querylist()">
-					<i class="iconfont icon-quanbutouziren"></i>&nbsp;&nbsp;所有用户
-					<span class="allcount">
-						{{allcount}}
-					</span>
-				</div>
-				<div class="line"></div>
-				<div class="left-content">
-					<p class="title">角色</p>
-					<ul class="left-content-list">
-						<li class="litem" v-for="(item,index) in usertypes" :class="item.selected ? 'active' : ''" @click="querylist(item.Id,index)">
-							<span class="rolename">{{item.roleName}}</span>
-							<span class="count">{{item.userCount}}</span>
-							<span class="operate">
-								<i class="iconfont icon-bianji" @click.stop="bianji(item.Id,item.roleName)"></i>&nbsp;
-								<i class="el-icon-close" @click.stop="shanchu(item.Id)"></i>
-							</span>
-						</li>
-					</ul>
-				</div>
-				<div class="line"></div>
-				<div class="addrolebtn" @click="addrole">
-					<i class="el-icon-plus"></i>
-					&nbsp;&nbsp;添加新角色
-				</div>
-			</div>
-			<span class="aside_open_close" @click="changisopen">
-				<i :class="isopen ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"></i>
-			</span>
-		</div>
+		<user-manager-aside </user-manager-aside>
+
 		<div class="main">
 			<el-col :span="24" class="toolbar">
 				<el-form :inline="true" :model="filters">
@@ -185,7 +155,7 @@
 		<el-dialog title="Dialog" :visible.sync="updateUserVisible" :close-on-click-modal="true" :modal="false" width="500px">
 			<el-form :model="userInfo" label-width="80px" ref="userInfo">
 				<el-form-item label="用户昵称" prop="nickName">
-					<el-input v-model="userInfo.nickName" auto-complete="off"></el-input>
+					<el-input v-model="userInfo.nikeName" auto-complete="off"></el-input>
 				</el-form-item>
 				<el-form-item label="用户密码" prop="password">
 					<el-input v-model="userInfo.password" auto-complete="off"></el-input>
@@ -210,8 +180,12 @@
 </template>
 
 <script>
-	import common from '../../common/js/common.js'
+import userManagerAside from '@/components/userManager/aside'
+import { getRoleList, getUserList } from '@/api/userManager.js'
 	export default {
+		components: {
+			userManagerAside,
+		},
 		data() {
 			return {
 				loading: true,
@@ -231,6 +205,7 @@
 					confirmpsd:'',
 					roleId:''
 				},
+				userInfo: {},
 				options:[],
 				selected: true,
 				filters: {
@@ -260,8 +235,8 @@
 			}
 		},
 		mounted() {
-			this.getRoleList();
-			this.getUserList(0,10);
+			//getRoleList();
+			/*this.getUserList(0,10);
 			var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 			this.init();
 			var me = this;
@@ -270,7 +245,7 @@
             }  
 			this.$nextTick(function(){
 				this.tableheight = h - 280;
-			})
+			})*/
 		},
 		methods: {
 			init(){
@@ -284,12 +259,13 @@
 			},
 			handleClick(row){
 				console.log(row)
+				this.userInfo = row
 				this.updateUserVisible = true;
 			},
 			deleteUser(row){
 				console.log(row)
 			},
-			getUserList(pageCount,pageSize){
+			/*getUserList(pageCount,pageSize){
 				var me = this;
 				this.$store.dispatch('axiosPost', { url: 'ROLEUSERLIST', params: {roleId:this.filters.roleId,pageCount:pageCount,pageSize:pageSize,search:this.filters.search} }).then(res => {
 					var data = res.data;
@@ -307,8 +283,8 @@
 						me.tableData = list;
 					}
 				});
-			},
-			getRoleList(sp,type){
+			},*/
+			/*getRoleList(sp,type){
 				console.log("4324444444444","取角色列表")
 				var me = this;
 				this.$store.dispatch('axiosPost', { url: 'ROLEINIT', params: {} }).then(res => {
@@ -352,7 +328,7 @@
 						}
 					}
 				});
-			},
+			},*/
 			changisopen(){
 				this.isopen = !this.isopen
 			},
@@ -670,62 +646,11 @@
 	.aside {
 		position: absolute;top: 0;bottom: 0;left: 0;width: 220px;padding-top: 20px;border-right: 1px solid #e4eaec;background: #fff;font-size: 14px;z-index: 10;
 	}
-	.aside_content {
-		overflow-y: auto;overflow-x:hidden;position: absolute;bottom: 0;top: 0;left: 0;width: 220px;
-	}
-	.aside_open_close {
-		position: absolute;font-size: 20px;z-index: 1000;display: inline-block;padding: 15px 8px;left: calc(100% - 1px);top: calc(50% - 40px);border-radius: 0 100px 100px 0;box-shadow: 1px 0 3px rgba(0,0,0,.2);background-color: #fff;
-	}
-	.line {
-		border-bottom: 1px solid #e4eaec;margin: 0px 12px;
-	}
-	.left-header {
-		padding: 25px 20px 35px 20px;
-	}
-	.litem.active {
-		color: #62a8ea;
-	}
-	.allcount {
-		float: right;
-	}
-	.left-content {
-		padding: 0 20px;
-	}
-	.left-content-list {
-		padding: 0;
-	}
-	.left-content-list li {
-		list-style: none;
-		height: 44px;
-		line-height: 44px;
-		position: relative;
-	}
-	.left-content-list li .count {
-		float: right;
-	}
-	.left-content-list li .operate {
-		position: absolute;
-		right: 0;
-		display: none;
-	}
-	.left-content-list li .operate i {
-		font-size: 18px;
-		font-weight: 700;
-	}
-	.left-content-list li .operate i:hover {
-		color: #20A0FF;
-		cursor: pointer;
-	}
-	.left-content-list li:hover .count {
-		display: none;
-	}
-	.left-content-list li:hover .operate {
-		display: initial;
-	}
+	
+	
+	
 	.title {
-		color: #526069;
-		height: 30px;
-		line-height: 30px;
+		
 	}
 	.main {
 		margin-left:220px;
@@ -733,18 +658,7 @@
 	.toolbar {
 		padding-bottom: 0px;
 	}
-	.addrolebtn {
-		height: 50px;
-		line-height: 50px;
-		margin-top: 15px;
-		text-indent: 10px;
-		color: #76838f;
-		cursor: pointer;
-	}
-	.addrolebtn i {
-		font-size: 15px;
-		font-weight: 700;
-	}
+	
 	.el-pagination {
 		text-align: center;
 		margin-top: 10px;

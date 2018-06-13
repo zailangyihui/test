@@ -12,7 +12,7 @@ export default {
 </script>
 
 <style>
-@import '/common/css/iconfont.css';
+@import './assets/css/iconfont.css';
 #app {
   font-family: "Helvetica Neue",Helvetica,Tahoma,Arial,"Microsoft Yahei","Hiragino Sans GB","WenQuanYi Micro Hei",sans-serif;
   font-size: 14px;
@@ -22,24 +22,7 @@ export default {
   color: #2c3e50;
   /*margin-top: 60px;*/
 }
-.el-menu-item-group__title {
-	padding: 0 !important;
-}
-.el-submenu__title {
-		background-color: #263238 !important;
-		color: rgba(163,175,183,.9) !important;
-		height: 37px;
-		line-height: 37px;
-	}
-	.el-radio-button__inner {
-		font-size: 0 !important;
-	}
-	.text-right {
-		text-align: right;
-	}
-	.text-center {
-		text-align: center;
-	}
+
 	.bg-green {
     background-color: #46be8a!important;
 	}
