@@ -1,6 +1,9 @@
 <template>
 	<section :class="isopen ? '' : 'close'">
-		<user-manager-aside </user-manager-aside>
+		<user-manager-aside 
+		v-on:queryUserList="onQueryUserList" 
+		v-on:add-role="onAddRole"
+		v-on:edit-role="onEditRole"></user-manager-aside>
 
 		<div class="main">
 			<el-col :span="24" class="toolbar">
@@ -16,32 +19,6 @@
 					</el-form-item>
 				</el-form>
 			</el-col>
-			<!--<el-table :data="tableData" border :height="tableheight">
-				<el-table-column prop="accounts" label="用户名" width="180">
-				</el-table-column>
-				<el-table-column prop="nikeName" label="昵称" width="180">
-				</el-table-column>
-				<el-table-column prop="sex" label="性别" width="180">
-				</el-table-column>-->
-				<!--<el-table-column prop="img" label="头像" width="180">
-					<template slot-scope="scope">
-						<img :src="scope.row.img" width="50" height="50" />
-					</template>
-				</el-table-column>-->
-				<!--<el-table-column prop="balanceA" label="金额">
-				</el-table-column>
-				<el-table-column prop="types" label="类型">
-				</el-table-column>
-				<el-table-column
-			      fixed="right"
-			      label="操作"
-			      width="300">
-			      <template slot-scope="scope">
-			        <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-			        <el-button type="text" size="small">编辑</el-button>
-			      </template>
-			    </el-table-column>
-			</el-table>-->
 			<template>
 			<el-table :data="tableData" border style="width: 100%" :height="tableheight">
 			    <el-table-column prop="accounts" label="用户名">
@@ -68,126 +45,43 @@
 				<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="100" :layout="isopen ? 'total, sizes, prev, pager, next, jumper' : 'prev, pager, next'" :total="total">
 				</el-pagination>
 			</div>
-			<!--<div class="adduserbox">
-				<button class="adduserbtn" @click="addUserVisible = true"><i class="el-icon-plus" style="font-size: 28px;font-weight: 700;"></i></button>
-			</div>-->
 		</div>
-		<!--添加角色模态框-->
-		<el-dialog title="Dialog" :visible.sync="addRoleVisible" :close-on-click-modal="true" :modal="false" width="500px">
-			<el-form :model="addForm" label-width="80px" ref="addForm">
-				<el-form-item label="角色名称" prop="role">
-					<el-input v-model="addForm.role" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="权限分配" prop="quanxian" v-loading="loading" class="maxheight">
-					<el-tree
-					  :data="menutree"
-					  show-checkbox
-					  node-key="id"
-					  ref="tree"
-					  default-expand-all
-					  :default-checked-keys="Idarr"
-					  :check-strictly="true"
-					  :props="defaultProps">
-					</el-tree>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click="addRoleVisible = false">取 消</el-button>
-				<el-button type="primary" @click="saveRole">确定</el-button>
-			</div>
-		</el-dialog>
-		<!--编辑角色模态框-->
-		<el-dialog title="Dialog" :visible.sync="editorRoleVisible" :close-on-click-modal="true" :modal="false" width="500px">
-			<el-form :model="addForm" label-width="80px" ref="addForm">
-				<el-form-item label="角色名称" prop="role">
-					<el-input v-model="addForm.role" auto-complete="off" disabled></el-input>
-				</el-form-item>
-				<el-form-item label="权限分配" prop="quanxian" v-loading="loading" class="maxheight">
-					<el-tree
-					  :data="menutree"
-					  show-checkbox
-					  node-key="id"
-					  ref="editortree"
-					  default-expand-all
-					  :default-checked-keys="Idarr"
-					  :check-strictly="true"
-					  :props="defaultProps">
-					</el-tree>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click="editorRoleVisible = false">取 消</el-button>
-				<el-button type="primary" @click="editorRole">确定</el-button>
-			</div>
-		</el-dialog>
-		<!--新增用户-->
-		<el-dialog title="Dialog" :visible.sync="addUserVisible" :close-on-click-modal="true" :modal="false" width="500px">
-			<el-form :model="addUser" label-width="80px" ref="addUser">
-				<el-form-item label="用户账号" prop="accounts">
-					<el-input v-model="addUser.accounts" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="用户昵称" prop="nickName">
-					<el-input v-model="addUser.nickName" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="用户密码" prop="password">
-					<el-input v-model="addUser.password" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="确认密码" prop="confirmpsd">
-					<el-input v-model="addUser.confirmpsd" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="角色选择" prop="role">
-					<el-select v-model="addUser.roleId" placeholder="请选择">
-					    <el-option
-					      v-for="item in options"
-					      :key="item.roleName"
-					      :label="item.roleName"
-					      :value="item.Id">
-					    </el-option>
-					</el-select>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click="cancelAddUser">取 消</el-button>
-				<el-button type="primary" @click="saveUser">确定</el-button>
-			</div>
-		</el-dialog>
-		<!--修改用户-->
-		<el-dialog title="Dialog" :visible.sync="updateUserVisible" :close-on-click-modal="true" :modal="false" width="500px">
-			<el-form :model="userInfo" label-width="80px" ref="userInfo">
-				<el-form-item label="用户昵称" prop="nickName">
-					<el-input v-model="userInfo.nikeName" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="用户密码" prop="password">
-					<el-input v-model="userInfo.password" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="用户角色" prop="role">
-					<el-select v-model="userInfo.roleId" placeholder="请选择">
-					    <el-option
-					      v-for="item in options"
-					      :key="item.roleName"
-					      :label="item.roleName"
-					      :value="item.Id">
-					    </el-option>
-					</el-select>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click="cancelAddUser">取 消</el-button>
-				<el-button type="primary" @click="saveUser">确定</el-button>
-			</div>
-		</el-dialog>
+		
+
+		<edit-role :show="shwoEditDialog"
+		:showLoading='showLoading'
+		:roleType="roleType"
+		:roleId = "roleId"
+		:roleName="roleName" 
+		:menuTree="menuTree"
+		:checkedTree="checkedTree"
+		v-on:close-edit-role="shwoEditDialog=false"></edit-role>
 	</section>
 </template>
 
 <script>
 import userManagerAside from '@/components/userManager/aside'
-import { getRoleList, getUserList } from '@/api/userManager.js'
+import editRole from '@/components/userManager/editRole'
+import { getRoleTree, getUserList } from '@/api/userManager.js'
+
 	export default {
 		components: {
-			userManagerAside,
+			userManagerAside, editRole
 		},
 		data() {
 			return {
+				shwoEditDialog: false,
+				showLoading: false,
+				roleId: '',
+				roleName: '',
+				roleType: '',
+				menuTree: [],
+				checkedTree: [],
+
+
+
+
+
 				loading: true,
 				isopen:true,
 				addRoleVisible:false,
@@ -218,7 +112,6 @@ import { getRoleList, getUserList } from '@/api/userManager.js'
 				currentPage: 1,
 				pageSize: 10,
 				tableheight: "530",
-				allcount: 0,
 				usertypes:[],
 		        props: {
 		          label: 'name',
@@ -226,28 +119,35 @@ import { getRoleList, getUserList } from '@/api/userManager.js'
 		          isLeaf: 'leaf'
 		        },
 		        count: 1,
-		        menutree: [],
-		        defaultProps: {
-		          children: 'children',
-		          label: 'text'
-		        },
-		        Idarr:[]
 			}
 		},
-		mounted() {
-			//getRoleList();
-			/*this.getUserList(0,10);
-			var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-			this.init();
-			var me = this;
-			window.onresize=function(){  
-				me.init()
-            }  
-			this.$nextTick(function(){
-				this.tableheight = h - 280;
-			})*/
-		},
+		
 		methods: {
+			async onAddRole(){
+				this.shwoEditDialog = true
+				this.showLoading = true
+				this.roleId = ''
+				this.roleName = ''
+				this.roleType = 'add'
+				let data = await getRoleTree({'roleId': ''})
+				this.menuTree = data.menu
+				this.checkedTree = []
+				this.showLoading = false
+			},
+			async onEditRole(id, name){
+				this.shwoEditDialog = true
+				this.showLoading = true
+				this.roleId = id
+				this.roleName = name
+				this.roleType = 'edit'
+				let data = await getRoleTree({'roleId': id})
+				this.menuTree = data.menu
+				this.checkedTree = data.defaultMenu
+				this.showLoading = false
+			},
+			async onQueryUserList(){
+
+			},
 			init(){
 				var w = document.body.clientWidth;
 				console.log(w)
@@ -373,24 +273,7 @@ import { getRoleList, getUserList } from '@/api/userManager.js'
 					}
 				});
 			},
-			addrole(){  //点击添加角色
-				console.log("点击添加角色")
-				this.addRoleVisible = true;
-				this.addForm.role = '';
-				var me = this;
-				this.menutree = [];
-				this.Idarr = [];
-				this.$store.dispatch('axiosPost', { url: 'ROLESHOWTREE', params: {} }).then(res => {
-					var data = res.data;
-					console.log(res,"===角色树形结构");
-					me.menutree = [];
-					if(data.code == 0) {
-						var data = data.data;
-						me.menutree = data.menu;
-					}
-					me.loading = false;
-				});
-			},
+
 			saveRole(){  //保存角色
 				console.log("保存角色")
 				if(!this.addForm.role) {
@@ -486,56 +369,9 @@ import { getRoleList, getUserList } from '@/api/userManager.js'
 		          });          
 		        });
 	      	},
-	      	bianji(roleid,rolename){
-	      		this.editorRoleVisible = true;
-	      		this.addForm.role = rolename;
-	      		this.addForm.roleId = roleid;
-	      		var me = this;
-	      		this.menutree = [];
-	      		this.Idarr = [];
-				this.$store.dispatch('axiosPost', { url: 'ROLESHOWTREE', params: {roleId:roleid} }).then(res => {
-					var data = res.data;
-					console.log(res,"===角色树形结构");
-					me.menutree = [];
-					me.Idarr = [];
-					if(data.code == 0) {
-						var data = data.data;
-						me.Idarr = data.defaultMenu;
-						me.menutree = data.menu;
-					}
-					me.loading = false;
-				});
-	      	},
-	      	editorRole(){
-	      		console.log("保存编辑角色")
-				console.log(this.$refs.editortree.getCheckedNodes());
-				var menu = this.$refs.editortree.getCheckedNodes();
-				var menuIds = [];
-				console.log(menu);
-				if(menu.length == 0){
-					this.$message.error('请选择角色权限！');
-					return;
-				} else {
-					for(var id in menu){
-						menuIds.push(menu[id].id);
-					}
-				}
-				var me = this;
-				console.log(this.addForm.role,menuIds.join(","))
-				this.$store.dispatch('axiosPost', { url: 'UPDATEROLE', params: {roleId:this.addForm.roleId,menuIds:menuIds.join(",")} }).then(res => {
-					console.log(res,"==修改角色及角色树形结构")
-					var data = res.data;
-					if(data.code == 0) {
-						me.$message({
-				          message: data.message,
-				          type: 'success'
-				        });
-					} else {
-						me.$message.error(data.message);
-					}
-				});
-	      },
-	      addOneUser(){
+
+
+	      	addOneUser(){
 	      	this.addUserVisible = true;
 	      	var me = this;
 	      	this.$store.dispatch('axiosPost', { url: 'GETROLEINFO', params: {} }).then(res => {
@@ -606,7 +442,19 @@ import { getRoleList, getUserList } from '@/api/userManager.js'
 				}
 			});
 	      }
-		}
+		},
+		created() {
+			//this.getUserList(0,10);
+			this.$nextTick(function(){
+				var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+					this.init();
+					var self = this;
+					window.onresize=function(){  
+						self.init()
+		            }  
+				this.tableheight = h - 280;
+			})
+		},
 	}
 </script>
 

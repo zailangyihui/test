@@ -1,7 +1,7 @@
 <template>
 	<el-aside>
 		<div class="wrap">
-			<div class="header" :class="selected ? 'active' : ''" @click="getUserList()">
+			<div class="header" :class="selected ? 'active' : ''" @click="queryUserList()">
 				<i class="iconfont icon-quanbutouziren"></i>&nbsp;&nbsp;所有用户
 				<span class="allcount">
 					{{allcount}}
@@ -11,18 +11,18 @@
 			<div class="content">
 				<p class="title">角色</p>
 				<ul class="list">
-					<li class="item" v-for="(item,index) in roleList" :class="item.selected ? 'active' : ''" @click="getUserList(item.Id,index)">
+					<li class="item" v-for="(item,index) in roleList" :class="item.selected ? 'active' : ''" @click="queryUserList(item.id, index)">
 						<span class="rolename">{{item.roleName}}</span>
 						<span class="count">{{item.userCount}}</span>
 						<span class="operate">
-							<i class="iconfont icon-bianji" @click.stop="editRole(item.Id,item.roleName)"></i>&nbsp;
-							<i class="el-icon-close" @click.stop="delRole(item.Id)"></i>
+							<i class="iconfont icon-bianji" @click.stop="editRole(item.id,item.roleName)"></i>&nbsp;
+							<i class="el-icon-close" @click.stop="delRole(item.id)"></i>
 						</span>
 					</li>
 				</ul>
 			</div>
 			<div class="line"></div>
-			<div class="btn-add-role" @click="addrole">
+			<div class="btn-add-role" @click="addRole">
 				<i class="el-icon-plus"></i> 添加新角色
 			</div>
 		</div>
@@ -62,15 +62,18 @@ export default {
     	async getRole(){
     		this.roleList = await getRoleList()
     	},
-    	getUserList(){
-    		this.$commit('getuserlist', true)
+    	queryUserList(params){
+    		this.$emit('queryUserList', params)
     	},
     	addRole(){
-    		console.log('open...')
-    		this.$store.commit('UPDATA_ASIDE_MENUS_STATE', 'unfold')
-    	},
-    	editRole(){
+    		console.log("点击添加角色")
+    		this.$emit('add-role')
 
+			
+    	},
+    	editRole(id, name){
+    		console.log(id, name)
+    		this.$emit('edit-role', id, name)
     	},
     	delRole(){
 
