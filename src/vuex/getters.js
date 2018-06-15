@@ -1,3 +1,4 @@
+
 // 这个 getter 函数会返回 state 的值
 export const env = state => state.env
 export const user = state => state.user
