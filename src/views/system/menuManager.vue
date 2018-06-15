@@ -2,7 +2,7 @@
 	<section :class="isopen ? '' : 'close'">
 		<menu-manager-aside></menu-manager-aside>
 		<div class="main">
-			<el-row :gutter="30" :height="aa">
+			<el-row :gutter="30">
 				<el-col :span="14">
 					<el-tree :data="data6" node-key="id" :expand-on-click-node="false" :props="defaultProps" :highlight-current="true" default-expand-all @node-click="nodeclick" @node-drag-start="handleDragStart" @node-drag-enter="handleDragEnter" @node-drag-leave="handleDragLeave" @node-drag-over="handleDragOver" @node-drag-end="handleDragEnd" @node-drop="handleDrop" draggable :allow-drop="allowDrop" :allow-drag="allowDrag">
 						<span class="custom-tree-node" slot-scope="{ node, data }">
@@ -75,56 +75,24 @@
 			</div>
 		</el-dialog>
 		<!--修改角色模态框-->
-		<el-dialog title="Dialog" :visible.sync="editorRoleVisible" :close-on-click-modal="true" :modal="false" width="500px">
-			<div class="from-item">
-				<label>图标&名称：</label>
-				<el-input placeholder="请输入菜单名" v-model="menuname">
-					<template slot="prepend">
-						<div class="zwdiv" @click="iconpopover=false"><i class="iconfont" :class="selecticon"></i></div>
-					</template>
-				</el-input>
-				<div class="popover" :hidden="iconpopover">
-					<div class="popover-title">
-						请选择图标
-						<i class="el-icon-close closepopover" @click.stop="iconpopover=true"></i>
-					</div>
-					<div class="popover-content">
-						<span class="iconbox" v-for="item in icons" @click.stop="selecticon=item"><i class="iconfont" :class="item"></i></span>
-					</div>
-				</div>
-			</div>
-			<div class="">
-				<label>权限分配：</label>
-				<el-select v-model="valueqx" multiple collapse-tags style="width: 100%;" placeholder="请选择">
-					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-					</el-option>
-				</el-select>
-			</div>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click="editorRoleVisible = false">取 消</el-button>
-				<el-button type="primary" @click="saveMenu2">确定</el-button>
-			</div>
-		</el-dialog>
+		<menu-manager-dialog></menu-manager-dialog>
 	</section>
 </template>
 
 <script>
-	import menuManagerAside from '@/components/menuManager/aside'
+    import menuManagerAside from '@/components/menuManager/aside'
+    import menuManagerDialog from '@/components/menuManager/editorMenu'
 	export default {
 		components:{
-			menuManagerAside
+			menuManagerAside, menuManagerDialog
 		},
 		data() {
 			return {
-				aa:"600px",
 				id:1000,
 				navdetail:{menuName:"自定义菜单",valueqx: ''},
 				shownavdetail: true,
 				iconpopover: true,
-				icons: ["icon-bianji", "icon-shuaxin", "icon-tuichu", "icon-diancan", "icon-Management", "icon-guanbi", "icon-quanbutouziren", "icon-diancan1"],
 				isopen: true,
-				addRoleVisible: false,
-				editorRoleVisible: false,
 				usertypes: [{
 					name: "系统管理",
 					icon: 'icon-diancan1',
@@ -538,7 +506,7 @@
     	border: 1px solid #e4eaec;
     	border-radius: 3px;
 	}
-	@media (max-width: 767px) {
+	/* @media (max-width: 767px) {
 		.el-dialog {
 			width: 100% !important;
 		}
@@ -551,5 +519,5 @@
 		.aside_open_close {
 			display: none;
 		}
-	}
+	} */
 </style>

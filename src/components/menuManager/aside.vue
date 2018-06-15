@@ -110,6 +110,12 @@
             }
         }
     }
+    .aside_open_close{.abs;.fs(20px);z-index: 1000;.dib;.p(15px 8px);left: calc(100% - 1px);top: calc(50% - 14px);.bdr(0 100px 100px 0);.bs(1px 0 3px rgba(0, 0, 0, .2));background-color: #fff;}
+}
+@media (max-width: 767px) {
+    .aside_open_close {
+        display: block;
+    }
 }
 
 </style>
