@@ -2,25 +2,25 @@
 	<el-aside :class="asideState">
 		<el-row>
 			<el-col :span="24">
-				<el-menu default-active="-1" @open="handleOpen" @close="handleClose" 
+				<el-menu :default-active="String(currentLeftMenu)" @open="handleOpen" @close="handleClose" 
 				background-color="#22323A" text-color="#93A3AC" active-text-color="#50A8F6"
 				>
 					<template v-for="(item,index) in leftMenus">
-						<el-menu-item :index="String(index)" 
+						<el-menu-item :index="String(item.id)" 
 						:class="{'active' :  currentLeftMenu==item.id}"
 						v-if="!item.children.length" 
 						@click="gotoPage(item)">
 							<i class="iconfont icon-Management"></i>
 							<span slot="title">{{item.text}}</span>
 						</el-menu-item>
-						<el-submenu :index="String(index)" v-else>
+						<el-submenu :index="String(item.id)" v-else>
 							<template slot="title">
 								<i class="iconfont icon-Management" :class="item.icon"></i>
 								<span>{{item.text}}</span>
 							</template>
 							<el-menu-item-group v-if="item.children">
 								<template v-for="(itemChild, indexChild) in item.children">
-									<el-menu-item :index="String(indexChild)" 
+									<el-menu-item :index="String(itemChild.id)" 
 									:class="{'active' :  currentLeftMenu==itemChild.id}"
 									@click="gotoPage(itemChild)"><i class="iconfont" :class="item.icon"></i>{{itemChild.text}}</el-menu-item>
 								</template>

@@ -1,23 +1,6 @@
 <template>
 	<section :class="isopen ? '' : 'close'">
-		<div class="aside">
-			<div class="aside_content">
-				<div class="left-header">
-					<span>顶部菜单</span>
-				</div>
-				<div class="line"></div>
-				<div class="left-content">
-					<ul class="left-content-list">
-						<li class="litem" v-for="(item,index) in usertypes" :class="item.selected ? 'active' : ''" :data-index="item.name" @click="querylist($event,index)"><i class="iconfont" :class="item.icon"></i>&nbsp;&nbsp;{{item.name}}<span class="count">{{item.count}}</span><span class="operate"><i class="iconfont icon-bianji" @click.stop="bianji(item)"></i>&nbsp;<i class="el-icon-close" @click.stop="shanchu"></i></span></li>
-					</ul>
-				</div>
-				<div class="line"></div>
-				<div class="addrolebtn" @click="addmenu"><i class="el-icon-plus"></i>&nbsp;&nbsp;添加新菜单</div>
-			</div>
-			<span class="aside_open_close" @click="changisopen">
-				<i :class="isopen ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"></i>
-			</span>
-		</div>
+		<menu-manager-aside></menu-manager-aside>
 		<div class="main">
 			<el-row :gutter="30" :height="aa">
 				<el-col :span="14">
@@ -126,7 +109,11 @@
 </template>
 
 <script>
+	import menuManagerAside from '@/components/menuManager/aside'
 	export default {
+		components:{
+			menuManagerAside
+		},
 		data() {
 			return {
 				aa:"600px",
@@ -363,7 +350,7 @@
 		background-color: rgba(0, 0, 0, 0.6);
 	}
 	
-	.aside {
+	/* .aside {
 		position: absolute;
 		top: 0;
 		bottom: 0;
@@ -384,7 +371,7 @@
 		top: 0;
 		left: 0;
 		width: 220px;
-	}
+	} */
 	
 	.aside_open_close {
 		position: absolute;
@@ -399,60 +386,57 @@
 		background-color: #fff;
 	}
 	
-	.line {
+	/* .line {
 		border-bottom: 1px solid #e4eaec;
 		margin: 0px 12px;
-	}
+	} */
 	
-	.left-header {
+	/* .left-header {
 		padding: 25px 20px 35px 20px;
-	}
+	} */
 	
-	.litem.active {
+	/* .litem.active {
 		color: #62a8ea;
-	}
+	} */
 	
-	.left-content {
+	/* .left-content {
 		padding: 0 20px;
-	}
+	} */
 	
-	.left-content-list {
+	/* .left-content-list {
 		padding: 0;
-	}
+	} */
 	
-	.left-content-list li {
+	/* .left-content-list li {
 		list-style: none;
 		height: 44px;
 		line-height: 44px;
-	}
+	} */
 	
-	.left-content-list li .count {
-		float: right;
-	}
 	
-	.left-content-list li .operate {
+	/* .left-content-list li .operate {
 		position: absolute;
 		right: 0;
 		display: none;
-	}
+	} */
 	
-	.left-content-list li .operate i {
+	/* .left-content-list li .operate i {
 		font-size: 18px;
 		font-weight: 700;
-	}
+	} */
 	
-	.left-content-list li .operate i:hover {
+	/* .left-content-list li .operate i:hover {
 		color: #20A0FF;
 		cursor: pointer;
-	}
+	} */
 	
-	.left-content-list li:hover .count {
+	/* .left-content-list li:hover .count {
 		display: none;
-	}
+	} */
 	
-	.left-content-list li:hover .operate {
+	/* .left-content-list li:hover .operate {
 		display: initial;
-	}
+	} */
 	
 	.title {
 		color: #526069;
