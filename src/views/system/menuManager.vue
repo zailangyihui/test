@@ -4,6 +4,7 @@
 		@add-menu="addMenu"
 		@show-menu-tree="showMenuTree"
 		@toggle-aside="toggleAside"></menu-manager-aside>
+
 		<div class="main">
 			<el-row :gutter="30">
 				<el-col :span="14">
@@ -74,8 +75,8 @@
 			...mapGetters(['menus'])
 		},
 		mounted() {
-			console.log("234444444444",this.$store)
-			console.log(this.$store.state.load,"======================")
+			//console.log("234444444444",this.$store)
+			//console.log(this.$store.state.load,"======================")
 			this.init();
 			var me = this;
 			window.onresize = function() {
@@ -83,13 +84,18 @@
 			}
 		},
 		watch: {
-			menus:function(arr){
-				if(arr && arr.lenght > 0)
+			'menus':function(arr){
+				console.log('1212121',arr)
+				if(arr && arr.length > 0){
+					console.log('392382')
 					this.menuTreeData = [arr[0]];
+				}
 			},
-			currentMenuId:function(id){
-				var currentMenu = this.menus.find(item => item.id == id);
-				console.log(currentMenu,"]]]]]]]]]]]]]]]]]]]]]]")
+			'currentMenuId':function(id){
+				console.log(id, '====================')
+				let record = this.menus.find(item => item.id == id)
+				console.log(record, '111111111')
+				this.menuTreeData = [record];
 			}
 		},
 		methods: {
@@ -106,6 +112,7 @@
 				}
 			},
 			showMenuTree(menuId){
+				console.log('menuId', menuId)
 				this.currentMenuId = menuId;
 			},
 			init() {
