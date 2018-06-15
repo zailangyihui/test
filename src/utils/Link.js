@@ -7,7 +7,7 @@ const TYPEID = {
     '2': 'sys_logList.go',
     '3': 'sys_menuManager.go',
     '4': '系统设置',
-    '5': '黑名单',
+    '5': 'sys_blackList.go',
     '6': '账户信息',
     '7': 'sys_userManager.go',
     '8': '显示设置',

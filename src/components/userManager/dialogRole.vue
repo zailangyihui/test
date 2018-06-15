@@ -1,5 +1,5 @@
 <template>
-	<el-dialog :title="dialogRole.title" :visible.sync="dialogRole.show" width="500px" :show-close="false" :close-on-click-modal="false" :append-to-body="true">
+	<el-dialog :title="dialogRole.title" :visible.sync="dialogRole.show" :close-on-click-modal="true" :modal="false" width="500px">
 		<el-form  label-width="80px" ref="addForm">
 			<el-form-item v-if="dialogRole.type === 'edit'" label="角色名称" prop="role">
 				<el-input v-model="dialogRole.roleName" auto-complete="off" disabled></el-input>
@@ -28,7 +28,6 @@
 </template>
 <script>
 import { updataRole, addRole } from '@/api/userManager.js'
-import { mapGetters } from 'vuex'
 export default {
 	props: ['dialogRole'],
 	data(){
@@ -39,9 +38,6 @@ export default {
 	          	label: 'text'
 	        },
 		}
-	},
-	computed: {
-		...mapGetters(['showDialog'])
 	},
 	methods: {
 		async entry(){
@@ -75,7 +71,6 @@ export default {
 			}
 			this.$emit('close-edit-role')
 			this.$store.commit('EVENT_GET_ROLE_LIST', true)
-			//this.$emit('updata-role-tree')
 		}
 	},
 	mounted(){

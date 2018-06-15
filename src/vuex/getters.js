@@ -4,6 +4,7 @@ export const env = state => state.env
 export const user = state => state.user
 export const theme = state => state.theme
 export const asideState = state => state.asideState
+export const updataRoleList = state => state.updataRoleList
 export const topMenus = (state) => {
     return state.menus.map((item, index) => {
         return {

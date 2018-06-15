@@ -45,8 +45,12 @@ const deleteRole = async (params) => {
 	let response = await fetch({url: 'removeRole.go', method: 'POST', params: params, })
 	return response
 }
+//删除用户
+const deleteUser = async (params) => {
+	let response = await fetch({url: 'removeRole.go', method: 'POST', params: params, })
+	return response
+}
 
-
-export { getRoleList, getROleInfo, getUserList, getRoleTree, addRole, updataRole, deleteRole }
+export { getRoleList, getROleInfo, getUserList, getRoleTree, addRole, updataRole, deleteRole, deleteUser }
 
 

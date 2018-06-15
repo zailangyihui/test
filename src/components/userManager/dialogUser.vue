@@ -1,5 +1,5 @@
 <template>
-	<el-dialog :title="dialogUser.title" :visible.sync="dialogUser.show" width="500px" :show-close="false" :close-on-click-modal="false" :append-to-body="true">
+	<el-dialog :title="dialogUser.title" :visible.sync="dialogUser.show" :close-on-click-modal="true" :modal="false" width="500px">
 		<el-form label-width="80px" ref="addUser">
 			<el-form-item label="用户账号" prop="accounts" v-if="dialogUser.type === 'add'">
 				<el-input v-model="accounts" auto-complete="off"></el-input>
@@ -45,7 +45,6 @@ export default {
 			roleList: []
 		}
 	},
-
 	methods: {
 		async getRole(){
     		let list =  await getROleInfo()

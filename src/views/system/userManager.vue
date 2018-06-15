@@ -14,7 +14,7 @@
 						<el-input v-model="searchKey" size="small" placeholder="输入用户名/昵称查询"></el-input>
 					</el-form-item>
 					<el-form-item>
-						<el-button type="primary" @click="onQueryUserList({'roleId': roleId, 'search': searchKey })" size="small">查询</el-button>
+						<el-button type="primary" @click="queryUserList({'roleId': roleId, 'search': searchKey })" size="small">查询</el-button>
 					</el-form-item>
 					<el-form-item>
 						<el-button type="primary" @click="addUser" size="small">添加</el-button>
@@ -45,8 +45,8 @@
 			</template>
 			<div class="block">
 				<el-pagination 
-				@size-change="handleSizeChange" 
-				@current-change="handleCurrentChange" 
+				@size-change="onChangePageSize" 
+				@current-change="pageNavi" 
 				:current-page="currentPage" 
 				:page-sizes="[10, 20, 30, 40]" 
 				:page-size="100" 
@@ -79,16 +79,8 @@ export default {
 	data() {
 		return {
 			isOpenAside: true,
-			shwoEditDialog: false,
-			shwoUserDialog: false,
-			showLoading: false,
-			dialogTitle: 'Dialog title',
-			dialogType: '',
 			roleId: '',
-			roleName: '',
-			roleType: '',
-			menuTree: [],
-			checkedTree: [],
+
 			userList: [],
 			searchKey: '',
 
@@ -167,6 +159,18 @@ export default {
 		},
 		deleteUser(row){
 			console.log(row)
+			this.$confirm('您确定删除该用户吗?', '提示', {
+	          confirmButtonText: '确定',
+	          cancelButtonText: '取消',
+	          type: 'warning'
+	        }).then( async ()  => {
+	        	let result = await deleteUser({ 'userId': row.id })
+	        	if(result.code === 0){
+	        		this.$message({type: 'success', message: '删除成功!'}) 
+	        		this.queryUserList({'roleId': this.roleId})
+	        	}
+	        }).catch(() => {          
+	        });
 		},
 		toggleAside(data){
 			if(data==='open'){
@@ -175,25 +179,30 @@ export default {
 				this.isOpenAside = false
 			}
 		},
+		onChangePageSize(val) {
+			this.pageSize = val;
+			if(Math.ceil(this.total / this.pageSize) >= this.currentPage) {
+				this.queryUserList({
+					'pageCount': (this.currentPage - 1) * this.pageSize, 
+					'pageSize': this.pageSize,
+				});
+			}
+		},
+		pageNavi(val) {
+			this.currentPage = val;
+			this.queryUserList({
+				'pageCount': (val - 1) * this.pageSize,
+				'pageSize': this.pageSize,
+			})
+		},
 		init(){
-			var w = document.body.clientWidth;
-			console.log(w)
-            if(w<=767){
+			var width = document.body.clientWidth;
+			//console.log(width)
+            if(width <= 767){
 				this.isOpenAside = false;
 			} else {
 				this.isOpenAside = true;
 			}
-		},
-		
-		handleSizeChange(val) {
-			this.pageSize = val;
-			if(Math.ceil(this.total / this.pageSize) >= this.currentPage) {
-				this.getUserList((this.currentPage - 1) * this.pageSize,this.pageSize);
-			}
-		},
-		handleCurrentChange(val) {
-			this.currentPage = val;
-			this.getUserList((val - 1) * this.pageSize,this.pageSize);
 		},
 	},
 	created() {
@@ -202,57 +211,29 @@ export default {
 			'pageSize': this.pageSize,
 		});
 		this.$nextTick(function(){
-			var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+			var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 				this.init();
 				var self = this;
 				window.onresize=function(){  
 					self.init()
 	            }  
-			this.tableheight = h - 280;
+			this.tableheight = height - 280;
 		})
 	},
 }
 </script>
 
-<style lang="less" >
+<style lang="less" scoped>
 @import '../../assets/css/base.less';
-	.maxheight {
-		max-height: 400px;overflow-y: auto;
-	}
-	.adduserbox {
-		position: fixed;right: 25px;bottom: 45px;
-	}
-	.adduserbtn {
-		width: 56px;height: 56px;border-radius: 50%;color: #fff;background-color: #46be8a;border-color: #46be8a;outline: none;box-shadow: 0 0 10px 0 rgba(60,60,60,.1);border: 1px solid transparent;
-	}
-	.adduserbox:hover .adduserbtn {
-		background-color: #60dea7;border-color: #60dea7;
-	}
-	.litem {
-		color: #76838f;
-		cursor: pointer;
-	}
-	.litem:hover .rolename {
-		color: #62a8ea;
-	}
-
-	table {
-		width: initial !important;
-	}
-	table th,
-	table td {
-		padding: 10px 0px !important;
-	}
-
-	
-
 .userManager {
 	.main {.ml(230px); 
 		.filters {
 			.el-form-item {.m(5px 5px 5px 0);}
+			.el-button--small, .el-button--small.is-round {padding: 9px 15px;}
 		}
 		.el-pagination {text-align: center; margin-top: 10px; }
 	}
+	
 	&.close {
 		.el-aside-usermanager {width: 0 !important; overflow: inherit;}
 		.main {margin-left:0px !important; }

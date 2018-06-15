@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+require('./assets/css/reset-ele-ui.css');
 
 import store from './vuex/store'
 import axios from 'axios'
@@ -13,6 +14,7 @@ Vue.prototype.$http = axios
 Vue.prototype.$eventHub = new Vue()
 
 Vue.config.productionTip = false
+
 
 Vue.use(ElementUI);
 
