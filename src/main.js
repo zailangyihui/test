@@ -10,6 +10,8 @@ import store from './vuex/store'
 import axios from 'axios'
 Vue.prototype.$http = axios
 
+Vue.prototype.$eventHub = new Vue()
+
 Vue.config.productionTip = false
 
 Vue.use(ElementUI);

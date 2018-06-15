@@ -3,8 +3,13 @@
 import store from '../vuex/store'
 import {fetch} from './fetch'
 
-
 //获取角色列表
+const getROleInfo = async (params) => {
+	let response = await fetch({url: 'getRoleInfo.go', method: 'POST', params: params, })
+	return response.data
+}
+
+//获取角色列表（统计用户数）
 const  getRoleList =  async (params) => { 
 	let response = await fetch({url: 'roleInit.go', method: 'POST', params: params, })
 	return response.data
@@ -13,13 +18,20 @@ const  getRoleList =  async (params) => {
 //根据角色查用户
 const getUserList = async (params) => { 
 	let data = fetch({url: 'roleUserList.go', method: 'POST', params: params, }) 
-	console.log(data)
 	return data
 }
+
+
 //获取权限设置树
 const getRoleTree =  async (params) => { 
 	let response = await fetch({url: 'roleShowTree.go', method: 'POST', params: params, })
 	return response.data
+}
+
+//添加角色
+const addRole = async (params) => {
+	let response = await fetch({url: 'createRole.go', method: 'POST', params: params, })
+	return response
 }
 //更新角色权限
 const updataRole = async (params) => {
@@ -27,8 +39,14 @@ const updataRole = async (params) => {
 	console.log('更新角色权限', response)
 	return response
 }
+//删除角色
+const deleteRole = async (params) => {
+	console.log('params', params)
+	let response = await fetch({url: 'removeRole.go', method: 'POST', params: params, })
+	return response
+}
 
 
-export { getRoleList, getUserList, getRoleTree, updataRole }
+export { getRoleList, getROleInfo, getUserList, getRoleTree, addRole, updataRole, deleteRole }
 
 

@@ -24,5 +24,7 @@ export default {
     //更新用户信息
 
     UPDATA_MENUS: (state, content) => { state.menus = content },
+
+    EVENT_GET_ROLE_LIST:  (state, content) => { state.updataRoleList = content },
     
 }

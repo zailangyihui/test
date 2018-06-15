@@ -22,6 +22,7 @@ export default {
   color: #2c3e50;
   /*margin-top: 60px;*/
 }
+.v-modal{opacity: .2}
 
 	.bg-green {
     background-color: #46be8a!important;

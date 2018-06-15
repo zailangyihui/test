@@ -19,10 +19,9 @@ const fetch = function (option) {
                 if(response.data.code===0){
                     resolve(response.data)
                 }else{
-                    console.log(response.data.msg)
                     Message({
                         showClose: true,
-                        message: response.data.msg,
+                        message: response.data.message,
                         type: 'error',
                         center: true
                     });
