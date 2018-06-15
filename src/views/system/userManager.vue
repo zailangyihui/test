@@ -214,7 +214,7 @@ export default {
 }
 </script>
 
-<style lang="less" >
+<style lang="less">
 @import '../../assets/css/base.less';
 	.maxheight {
 		max-height: 400px;overflow-y: auto;

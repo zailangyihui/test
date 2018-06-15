@@ -11,15 +11,15 @@
                         <i class="iconfont" :class="item.icon"></i>&nbsp;&nbsp;
                         <span class="menuname">{{item.text}}</span>
                         <span class="operate">
-                            <i class="iconfont icon-bianji" @click.stop="editorMenu(item)"></i>&nbsp;<i class="el-icon-close" @click.stop="deleteMenu"></i>
+                            <i class="iconfont icon-bianji" @click.stop="editorMenu(item)"></i>&nbsp;<i class="el-icon-close" @click.stop="delMenu"></i>
                         </span>
                     </li>
                 </ul>
             </div>
             <div class="line"></div>
-            <div class="addrolebtn" @click="addmenu"><i class="el-icon-plus"></i>&nbsp;&nbsp;添加新菜单</div>
+            <div class="btn-add-menu" @click="addMenu"><i class="el-icon-plus"></i>&nbsp;&nbsp;添加新菜单</div>
         </div>
-        <span class="aside_open_close" @click="changeisopen">
+        <span class="btnToggle" @click="toggleAside">
             <i :class="isopen ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"></i>
         </span>
     </div>
@@ -30,17 +30,15 @@
         name:'MenuManagerAside',
         data(){
             return {
-                currentNavId:0,
                 isopen:true,
                 menuList: []
             }
         },
         computed: {
-            ...mapGetters(['topMenus','leftMenus'])
+            ...mapGetters(['topMenus'])
         },
         watch: {
             'topMenus': function(arr){
-                console.log(arr,"[[[[]]]]]]]]]]]]]]")
                 this.initMenuData(arr);
             }
         },
@@ -51,11 +49,13 @@
                     item.selected = 0
                     if(item.id == menuid){
                         item.selected = 1
+                        this.$emit('show-menu-tree',item.id);
                     }
                 })
             },
             initMenuData(arr){
                 this.menuList = arr.map((item, index)=>{
+                    this.$emit('add-menu',item.id);
                     return {
                         id: item.id,
                         text: item.text,
@@ -63,16 +63,21 @@
                     }
                 })
             },
-            addmenu(){
-                
+            addMenu(){
+                this.$emit('add-menu');
             },
-            changeisopen(){
-
+            toggleAside(){
+                this.isopen = !this.isopen
+                if(this.isopen){
+                    this.$emit('toggle-aside', 'open')
+                }else{
+                    this.$emit('toggle-aside', 'close')
+                }
             },
             editorMenu(){
 
             },
-            deleteMenu(){
+            delMenu(){
 
             }
         },
@@ -91,11 +96,14 @@
     .aside_content{.abs;bottom: 0;top: 0;left: 0;.w(220px);overflow-y: auto;overflow-x: hidden;
         .left-header {.p(25px 20px 35px 20px);}
         .line {border-bottom: 1px solid @bdcolor;.m(0px 12px);}
+        .btn-add-menu {.h(50px);.lh(50px);.mt(15px);text-indent: 10px;color: #76838f;cursor: pointer;
+            i {.fs(15px);.fb;}
+        }
         .left-content {.p(0 20px);
             .left-content-list {.p(0);
                 .litem{list-style: none;.h(44px);.lh(44px);
                     .menuname {color: @gray; cursor: pointer;}
-                    .operate{.abs;right: 0;.dn;
+                    .operate{.abs;right: 20px;.dn;
                         i {.fs(18px);.fb; color: @gray + 50;
 							&:hover {color: @blue; cursor: pointer;}; 
 						}
@@ -110,12 +118,9 @@
             }
         }
     }
-    .aside_open_close{.abs;.fs(20px);z-index: 1000;.dib;.p(15px 8px);left: calc(100% - 1px);top: calc(50% - 14px);.bdr(0 100px 100px 0);.bs(1px 0 3px rgba(0, 0, 0, .2));background-color: #fff;}
+    .btnToggle {.abs; .hide; .fs(20px); z-index: 1000; .p(15px 8px;); right: -36px;top: calc(50% - 10px);border-radius: 0 100px 100px 0;box-shadow: 1px 0 3px rgba(0,0,0,.2);background-color: #fff; cursor: pointer;}
+    @media (max-width: 767px){
+		.btnToggle {display: block; }
+	}
 }
-@media (max-width: 767px) {
-    .aside_open_close {
-        display: block;
-    }
-}
-
 </style>
