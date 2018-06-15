@@ -11,7 +11,7 @@
 					</transition>
 				</el-col>
 			</el-main>
-			<el-footer :class="packupClass">Footer</el-footer>
+			<el-footer style="display: none" :class="packupClass">Footer</el-footer>
 			
 		</el-container>
 	</div>
