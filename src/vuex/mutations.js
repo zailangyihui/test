@@ -21,7 +21,6 @@ export default {
     UPDATA_TOP_MENUS_CURRENT: function(state, id){ state.currentTopMenu = id },
 
     UPDATA_CURRENT_LEFT_MENU: function(state, id){ state.currentLeftMenu = id },
-    //更新用户信息
 
     UPDATA_MENUS: (state, content) => { state.menus = content },
 

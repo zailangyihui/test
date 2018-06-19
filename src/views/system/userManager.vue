@@ -90,7 +90,7 @@ export default {
 				loading: false,
 				type: '',
 				roleId: '',
-				rolename: '',
+				roleName: '',
 				menuTree: [],
 				checkedTree: [],
 			},
@@ -108,9 +108,6 @@ export default {
 			pageSize: 10,
 
 			tableheight: "530",
-			
-
-	        //count: 1,
 		}
 	},
 	
@@ -141,7 +138,7 @@ export default {
 			this.dialogRole.loading = true
 			this.dialogRole.roleId = id
 			this.dialogRole.roleName = name
-			this.dialogRole.roleType = 'edit'
+			this.dialogRole.type = 'edit'
 			this.updataRoleTree({'roleId': id})
 			this.dialogRole.loading = false
 		},

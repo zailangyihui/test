@@ -52,15 +52,16 @@ export default {
 					menuIds.push(menu[key].id);
 				}
 			}
-			if(this.roleType === 'edit'){
-				let data = await updataRole({'roleId': this.roleId, 'menuIds': menuIds.join(",") })
+			if(this.dialogRole.type === 'edit'){
+				let data = await updataRole({'roleId': this.dialogRole.roleId, 'menuIds': menuIds.join(",") })
 				if(data.code === 0){
 					this.$message({
 			          	message: data.message,
 			          	type: 'success'
 			        });
 				}
-			}else if(this.roleType === 'add'){
+			}else if(this.dialogRole.type === 'add'){
+				console.log('add')
 				let data = await addRole({'roleName': this.inputRoleName, 'menuIds': menuIds.join(",") })
 				if(data.code === 0){
 					this.$message({
@@ -74,6 +75,7 @@ export default {
 		}
 	},
 	mounted(){
+		console.log(this.dialogRole)
 	}
 }
 </script>
