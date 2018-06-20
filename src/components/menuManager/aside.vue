@@ -11,13 +11,13 @@
                         <i class="iconfont" :class="item.icon"></i>&nbsp;&nbsp;
                         <span class="menuname">{{item.text}}</span>
                         <span class="operate">
-                            <i class="iconfont icon-bianji" @click.stop="editorMenu(item)"></i>&nbsp;<i class="el-icon-close" @click.stop="delMenu"></i>
+                            <i class="iconfont icon-bianji" @click.stop="$emit('editor-menu',item)"></i>&nbsp;<i class="el-icon-close" @click.stop="delMenu(item.id)"></i>
                         </span>
                     </li>
                 </ul>
             </div>
             <div class="line"></div>
-            <div class="btn-add-menu" @click="addMenu"><i class="el-icon-plus"></i>&nbsp;&nbsp;添加新菜单</div>
+            <div class="btn-add-menu" @click="$emit('add-menu')"><i class="el-icon-plus"></i>&nbsp;&nbsp;添加新菜单</div>
         </div>
         <span class="btnToggle" @click="toggleAside">
             <i :class="isopen ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"></i>
@@ -25,7 +25,8 @@
     </div>
 </template>
 <script>
-    import { mapGetters } from 'vuex';  
+    import { mapGetters } from 'vuex'
+    import { deleteMenu, getMenus } from '@/api/menuManager.js'
     export default {
         name:'MenuManagerAside',
         data(){
@@ -35,7 +36,7 @@
             }
         },
         computed: {
-            ...mapGetters(['topMenus'])
+            ...mapGetters(['topMenus', 'user'])
         },
         watch: {
             'topMenus': function(arr){
@@ -62,9 +63,6 @@
                     }
                 })
             },
-            addMenu(){
-                this.$emit('add-menu');
-            },
             toggleAside(){
                 this.isopen = !this.isopen
                 if(this.isopen){
@@ -73,11 +71,29 @@
                     this.$emit('toggle-aside', 'close')
                 }
             },
-            editorMenu(){
-
+            delMenu(menuId){
+                console.log(menuId,"======")
+				this.$confirm('您确定删除该菜单吗?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(async () => {
+                    let data = await deleteMenu({menuId:menuId});
+                    this.$message({
+                        message: data.message,
+                        type: 'success'
+                    });
+                    this.updateMenu();
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});
+				});
             },
-            delMenu(){
-
+            async updateMenu(){
+                let data = await getMenus({uid: this.user.id});
+                this.$store.commit('UPDATA_MENUS', data.data.treeMenu)
             }
         },
         created(){

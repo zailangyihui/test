@@ -1,4 +1,3 @@
-
 // API
 import Vue from 'vue'
 import axios from 'axios'
@@ -11,14 +10,13 @@ const instance = axios.create({
     timeout: 30 * 1000
 })
 
-const fetch = function (option) {
+const fetch = function(option) {
     return new Promise((resolve, reject) => {
         instance(option).then(response => {
-            //console.log(response)
-            if(response.status===200){
-                if(response.data.code===0){
+            if (response.status === 200) {
+                if (response.data.code === 0) {
                     resolve(response.data)
-                }else{
+                } else {
                     Message({
                         showClose: true,
                         message: response.data.message,
@@ -26,7 +24,7 @@ const fetch = function (option) {
                         center: true
                     });
                 }
-            }else{
+            } else {
                 Message({
                     showClose: true,
                     message: '请求出错！',
@@ -47,4 +45,4 @@ const fetch = function (option) {
 }
 
 
-export {fetch}
+export { fetch }

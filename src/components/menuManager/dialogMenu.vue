@@ -1,5 +1,5 @@
 <template>
-    <el-dialog :title="dialogMenu.title" :visible.sync="dialogMenu.show" width="500px" :show-close="false" :close-on-click-modal="false" :append-to-body="true">
+    <el-dialog :title="dialogMenu.title" :visible.sync="dialogMenu.show" :close-on-click-modal="true" :modal="false" width="500px">
         <div class="from-item">
             <label>图标&名称：</label>
             <el-input placeholder="请输入菜单名" v-model="dialogMenu.menuName">
@@ -20,7 +20,7 @@
         <div class="">
             <label>权限分配：</label>
             <el-select v-model="dialogMenu.roleIds" multiple collapse-tags style="width: 100%;" placeholder="请选择" :loading="dialogMenu.loading">
-                <el-option v-for="item in roleArr" :key="item.value" :label="item.label" :value="item.value">
+                <el-option v-for="item in dialogMenu.roleArr" :key="item.roleName" :label="item.roleName" :value="item.id">
                 </el-option>
             </el-select>
         </div>
@@ -32,26 +32,52 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
+    import { editorMenu, addMenu, getMenus } from '@/api/menuManager.js'
     export default {
         props:['dialogMenu'],
+        computed: {
+            ...mapGetters(['user']),
+        },
         data(){
             return{
                 iconPopover:true,
-                roleArr: [{
-					value: '选项1',
-					label: '黄金糕'
-				}, {
-					value: '选项2',
-					label: '子马虎'
-				}],
+                roleIds: [],
                 icons: ["icon-bianji", "icon-shuaxin", "icon-tuichu", "icon-diancan", "icon-Management", "icon-guanbi", "icon-quanbutouziren", "icon-diancan1"],
             }
         },
         methods:{
-            entry(){
-
+            async entry(){
+                if(!this.dialogMenu.menuName){
+                    this.$message.error('请输入菜单名！');
+				    return;
+                }
+                if(!this.dialogMenu.roleIds.length){
+                    this.$message.error('请选择权限！');
+				    return;
+                }
+                if(this.dialogMenu.type == "add"){
+                    let data = await addMenu({'menuName':this.dialogMenu.menuName,'roleIds':this.dialogMenu.roleIds,'menuIcon':this.dialogMenu.menuIcon,'parentId':this.dialogMenu.parentId});
+                    this.$message({
+                        message: data.message,
+                        type: 'success'
+                    });
+                    this.updateMenu();
+                } else if(this.dialogMenu.type == "editor"){
+                    let data = await editorMenu({'menuId': this.dialogMenu.menuId,'menuIcon':this.dialogMenu.menuIcon, 'menuName': this.dialogMenu.menuName, 'roleIds': this.dialogMenu.roleIds});
+                    this.$message({
+                        message: data.message,
+                        type: 'success'
+                    });
+                    this.updateMenu();
+                }
+                this.dialogMenu.show = false;
+            },
+            async updateMenu(){
+                let data = await getMenus({uid: this.user.id});
+                this.$store.commit('UPDATA_MENUS', data.data.treeMenu)
             }
-        }
+        },
     }
 </script>
 

@@ -1,34 +1,36 @@
 <template>
     <div class="shownavdetail" v-show="MenuDetail.show">
-        <h5>{{MenuDetail.menuName}}</h5>
+        <h5>菜单信息</h5>
         <hr />
         <div class="from-item">
             <label>菜单名称：</label>
-            <el-input v-model="MenuDetail.menuName" auto-complete="off" size="small"></el-input>
+            <el-input v-model="MenuDetail.menuName" auto-complete="off" size="small" disabled="disabled"></el-input>
         </div>
-        <div class="from-item">
+        <!-- <div class="from-item">
             <label>菜单链接：</label>
             <el-input v-model="MenuDetail.menuUrl" auto-complete="off" size="small"></el-input>
-        </div>
+        </div> -->
         <div class="from-item">
             <label>权限分配：</label>
-            <el-select v-model="MenuDetail.roleArr" multiple collapse-tags style="width: 100%;" placeholder="请选择" size="small">
-                <el-option v-for="item in roleList" :key="item.value" :label="item.label" :value="item.value">
+            <el-select v-model="MenuDetail.roleArr" multiple placeholder="" style="width: 100%;" size="small" disabled="disabled">
+                <el-option
+                v-for="item in MenuDetail.roleList"
+                :key="item.id"
+                :label="item.roleName"
+                :value="item.id">
                 </el-option>
             </el-select>
         </div>
-        <div class="from-item">
+        <!-- <div class="from-item">
             <el-button type="primary" class="btn-save-menu" size="small">保存</el-button>
-        </div>
+        </div> -->
     </div>
 </template>
 <script>
     export default {
         props:['MenuDetail'],
         data(){
-            return {
-                roleList:[]
-            }
+            return {}
         },
         methods:{
 

@@ -2,27 +2,34 @@
 	<section class="menuManager" :class="isOpenAside ? '' : 'close'">
 		<menu-manager-aside 
 		@add-menu="addMenu"
+		@editor-menu="editorMenu"
 		@show-menu-tree="showMenuTree"
 		@toggle-aside="toggleAside"></menu-manager-aside>
 
 		<div class="main">
 			<el-row :gutter="30">
 				<el-col :span="14">
-					<el-tree :data="menuTreeData" node-key="id" :expand-on-click-node="false" :props="defaultProps" :highlight-current="true" default-expand-all @node-click="nodeclick" @node-drag-start="handleDragStart" @node-drag-enter="handleDragEnter" @node-drag-leave="handleDragLeave" @node-drag-over="handleDragOver" @node-drag-end="handleDragEnd" @node-drop="handleDrop" draggable :allow-drop="allowDrop" :allow-drag="allowDrag">
+					<el-tree :data="menuTreeData" node-key="id" :expand-on-click-node="false" :props="defaultProps" :highlight-current="true" default-expand-all @node-click="nodeclick">
 						<span class="custom-tree-node" slot-scope="{ node, data }">
-					        <span>{{ node.label }}</span>
+					        <span><i class="iconfont" :class="node.icon"></i>&nbsp;&nbsp;{{ node.label }}</span>
 					        <span>
-					          <el-button
+							  <el-button
 					            type="text"
 					            size="mini"
-					            @click="() => append(data)">
-					            Append
+					            @click.stop="editorMenu(data)">
+					            编辑
 					          </el-button>
 					          <el-button
 					            type="text"
 					            size="mini"
-					            @click="() => remove(node, data)">
-					            Delete
+					            @click.stop="() => append(data)">
+					            添加
+					          </el-button>
+					          <el-button
+					            type="text"
+					            size="mini"
+					            @click.stop="() => remove(node, data)">
+					            删除
 					          </el-button>
 					        </span>
 					      </span>
@@ -43,6 +50,7 @@
     import menuManagerAside from '@/components/menuManager/aside'
 	import menuManagerDialog from '@/components/menuManager/dialogMenu'
 	import menuManagerRightPart from '@/components/menuManager/rightPart'
+	import { queryAllRole, getMenuRole, deleteMenu, getMenus } from '@/api/menuManager.js'
 	export default {
 		components:{
 			menuManagerAside, menuManagerDialog, menuManagerRightPart
@@ -55,12 +63,15 @@
 					loading:true,
 					menuName:'',
 					menuIcon:'',
+					type:'',
+					roleArr:[]
 				},
 				MenuDetail:{
 					show:true,
 					menuName:'',
 					menuUrl:'',
-					roleArr:'',
+					roleArr:[],
+					roleList:[],
 				},
 				isOpenAside: true,
 				defaultProps: {
@@ -72,37 +83,64 @@
 			}
 		},
 		computed:{
-			...mapGetters(['menus'])
+			...mapGetters(['menus','user'])
 		},
 		mounted() {
-			//console.log("234444444444",this.$store)
-			//console.log(this.$store.state.load,"======================")
 			this.init();
 			var me = this;
 			window.onresize = function() {
 				me.init()
 			}
 		},
+		created(){
+			if(this.menus.length){
+				this.menuTreeData = [this.menus[0]];
+			}
+		},
 		watch: {
 			'menus':function(arr){
-				console.log('1212121',arr)
-				if(arr && arr.length > 0){
-					console.log('392382')
+				if(arr && arr.length){
 					this.menuTreeData = [arr[0]];
 				}
 			},
 			'currentMenuId':function(id){
-				console.log(id, '====================')
 				let record = this.menus.find(item => item.id == id)
-				console.log(record, '111111111')
 				this.menuTreeData = [record];
-			}
+			},
 		},
 		methods: {
-			addMenu() {
-				console.log("点击添加菜单")
-				this.dialogMenu.show = true;
+			async addMenu(parentId) {
+				this.initMenuDialog();
 				this.dialogMenu.title = "添加菜单";
+				this.dialogMenu.type = "add";
+				this.dialogMenu.parentId = parentId;
+				let list = await queryAllRole();
+				this.dialogMenu.roleIds = [];
+				this.dialogMenu.roleArr = list;
+				this.dialogMenu.loading = false;
+			},
+			async editorMenu(menuData){
+				if(menuData.id == 0){
+					this.addMenu(menuData.parentId);
+					return;
+				}
+				this.initMenuDialog();
+				this.dialogMenu.menuName = menuData.text;
+				this.dialogMenu.title = "修改菜单";
+				this.dialogMenu.type = "editor";
+				this.dialogMenu.menuId = menuData.id;
+				let data = await getMenuRole({menuId:menuData.id});
+				this.dialogMenu.roleArr = data.roleList;
+				this.dialogMenu.roleIds = data.roleIds;
+				this.dialogMenu.loading = false;
+				
+			},
+			initMenuDialog(){
+				this.dialogMenu.roleArr = [];
+				this.dialogMenu.loading = true;
+				this.dialogMenu.show = true;
+				this.dialogMenu.menuName = '';
+				this.dialogMenu.menuIcon = "icon-Management";
 			},
 			toggleAside(data){
 				if(data==='open'){
@@ -112,7 +150,6 @@
 				}
 			},
 			showMenuTree(menuId){
-				console.log('menuId', menuId)
 				this.currentMenuId = menuId;
 			},
 			init() {
@@ -124,30 +161,34 @@
 					this.isOpenAside = true;
 				}
 			},
-			querylist(e, index) {
-				for(var id in this.usertypes) {
-					this.usertypes[id].selected = false;
-				}
-				this.usertypes[index].selected = true;
-				console.log(e.target.getAttribute("data-index"), index)
+			async nodeclick(menus){
+				console.log(menus)
+				this.MenuDetail.menuName = menus.text;
+				let data = await getMenuRole({menuId:menus.id});
+				this.MenuDetail.roleList = data.roleList;
+				this.MenuDetail.roleArr = data.roleIds;
 			},
-			saveMenu() {
-				console.log("保存角色", this.valueqx)
-			},
-			saveMenu2() {
-				console.log("保存角色", this.valueqx)
-			},
-			shanchu() {
-				console.log("shanchu")
+			append(data) {
+		        const newChild = { id: 0, text: '新菜单', children: [], parentId: data.id };
+		        if (!data.children) {
+		          this.$set(data, 'children', []);
+		        }
+		        data.children.push(newChild);
+		    },
+		    remove(node, data) {
 				this.$confirm('您确定删除该菜单吗?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					this.$message({
-						type: 'success',
-						message: '删除成功!'
-					});
+					if(data.id == 0){
+						const parent = node.parent;
+						const children = parent.data.children || parent.data;
+						const index = children.findIndex(d => d.id === data.id);
+						children.splice(index, 1);
+					} else {
+						this.deleteMenu(data.id);
+					}
 				}).catch(() => {
 					this.$message({
 						type: 'info',
@@ -155,56 +196,18 @@
 					});
 				});
 			},
-			bianji(item) {
-				this.editorRoleVisible = true;
-				this.menuname = item.name;
-				this.selecticon = item.icon
+			async deleteMenu(menuId){
+				let data = await deleteMenu({'menuId': menuId});
+				this.$message({
+					message: data.message,
+					type: 'success'
+				});
+				this.updateMenu();
 			},
-			handleDragStart(node, ev) {
-				console.log('drag start', node);
-			},
-			handleDragEnter(draggingNode, dropNode, ev) {
-				console.log('tree drag enter: ', dropNode.label);
-			},
-			handleDragLeave(draggingNode, dropNode, ev) {
-				console.log('tree drag leave: ', dropNode.label);
-			},
-			handleDragOver(draggingNode, dropNode, ev) {
-				console.log('tree drag over: ', dropNode.label);
-			},
-			handleDragEnd(draggingNode, dropNode, dropType, ev) {
-				console.log('tree drag end: ', dropNode && dropNode.label, dropType);
-			},
-			handleDrop(draggingNode, dropNode, dropType, ev) {
-				console.log('tree drop: ', dropNode.label, dropType);
-			},
-			allowDrop(draggingNode, dropNode, type) {
-				if(dropNode.data.label === '二级 3-1') {
-					return type !== 'inner';
-				} else {
-					return true;
-				}
-			},
-			allowDrag(draggingNode) {
-				console.log(draggingNode)
-				return true;
-			},
-			nodeclick(a,b,c){
-				console.log(a,b,c)
-			},
-			append(data) {
-		        const newChild = { id: this.id++, menuName: 'testtest', children: [] };
-		        if (!data.children) {
-		          this.$set(data, 'children', []);
-		        }
-		        data.children.push(newChild);
-		    },
-		    remove(node, data) {
-		        const parent = node.parent;
-		        const children = parent.data.children || parent.data;
-		        const index = children.findIndex(d => d.id === data.id);
-		        children.splice(index, 1);
-		    },
+			async updateMenu(){
+                let data = await getMenus({uid: this.user.id});
+                this.$store.commit('UPDATA_MENUS', data.data.treeMenu)
+            }
 		}
 	}
 </script>
@@ -220,9 +223,7 @@
 			}
 		} 
 		.custom-tree-node {flex: 1;display: flex;align-items: center;justify-content: space-between;.fs(14px);.pr(8px);}
-		.el-tree-node__content {.m(5px 0);
-			border: 1px solid #e4eaec;
-			border-radius: 3px;
+		.el-tree-node__content {.m(5px 0);border: 1px solid #e4eaec;.h(30px);line-height: 30px;border-radius: 3px;
 		}
 	}
 	&.close{
