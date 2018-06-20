@@ -61,6 +61,7 @@
 
 		<dialog-user
 		:dialogUser="dialogUser"
+		v-on:query-user-list="getTableData"
 		v-on:close-add-user="dialogUser.show=false"
 		></dialog-user>
 	</section>
@@ -151,6 +152,9 @@ export default {
 			this.dialogUser.show = true;
 			this.dialogUser.title = `添加用户`
 			this.dialogUser.type = 'add'
+			this.dialogUser.nikeName = ''
+			this.dialogUser.accounts = ''
+			this.dialogUser.id = ''
 	      	console.log('add user...')
 		},
 		eidtUser(row){
@@ -159,6 +163,7 @@ export default {
 			this.dialogUser.title = `编缉用户（${row.nikeName}）`
 			this.dialogUser.type = 'edit'
 			this.dialogUser.id = row.id
+			this.dialogUser.nikeName = row.nikeName
 			this.dialogUser.accounts =row.accounts
 		},
 		deleteUser(row){

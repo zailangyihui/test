@@ -1,6 +1,5 @@
 
-// common
-import store from '../vuex/store'
+
 import {fetch} from './fetch'
 
 //获取角色列表（统计用户数）
@@ -45,12 +44,36 @@ const deleteRole = async (params) => {
 	let response = await fetch({url: 'removeRole.go', method: 'POST', params: params, })
 	return response
 }
+
+//添加用户
+const addUser = async (params) => {
+	let response = await fetch({url: 'managerRegister.go', method: 'POST', params: params, })
+	return response
+}
+
+//更新用户
+const updataUser = async (params) => {
+	let response = await fetch({url: 'managerRegister.go', method: 'POST', params: params, })
+	return response
+}
+
 //删除用户
 const deleteUser = async (params) => {
 	let response = await fetch({url: 'removeRole.go', method: 'POST', params: params, })
 	return response
 }
 
-export { getRoleList, getROleInfo, getUserList, getRoleTree, addRole, updataRole, deleteRole, deleteUser, getRoleListForUser }
+export { 
+	getRoleList, 
+	getRoleListForUser,
+	getUserList, 
+	getRoleTree, 
+	addRole, 
+	updataRole, 
+	deleteRole, 
+	addUser,
+	updataUser,
+	deleteUser,
+}
 
 

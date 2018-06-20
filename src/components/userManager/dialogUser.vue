@@ -2,10 +2,10 @@
 	<el-dialog :title="dialogUser.title" :visible.sync="dialogUser.show" :close-on-click-modal="true" :modal="false" width="500px">
 		<el-form label-width="80px" ref="addUser">
 			<el-form-item label="用户账号" prop="accounts" v-if="dialogUser.type === 'add'">
-				<el-input v-model="accounts" auto-complete="off"></el-input>
+				<el-input v-model="dialogUser.accounts" auto-complete="off"></el-input>
 			</el-form-item>
-			<el-form-item label="用户昵称" prop="nickName">
-				<el-input v-model="nickName" auto-complete="off"></el-input>
+			<el-form-item label="用户昵称" prop="nikeName">
+				<el-input v-model="dialogUser.nikeName" auto-complete="off"></el-input>
 			</el-form-item>
 			<el-form-item label="用户密码" prop="password">
 				<el-input v-model="password" auto-complete="off"></el-input>
@@ -31,18 +31,15 @@
 	</el-dialog>
 </template>
 <script>
-import { getRoleListForUser } from '@/api/userManager.js'
+import { getRoleListForUser, addUser } from '@/api/userManager.js'
 
 export default {
 	props: ['dialogUser' ],
 	data(){
 		return {
-			accounts:'',
-			nickName:'',
 			password:'',
 			confirmpsd:'',
 			roleId:'',
-			roleName: '',
 			roleList: []
 		}
 	},
@@ -78,30 +75,45 @@ export default {
     		}
     	},
 
-		esc(){
-
-		},
 		async entry(){
-			console.log("保存编辑角色")
-			var menu = this.$refs.editortree.getCheckedNodes();
-			var menuIds = [];
-			console.log(menu);
-			if(menu.length == 0){
-				this.$message.error('请选择角色权限！');
+			console.log("保存编辑用户")
+			let submit = true
+			if(this.dialogUser.accounts === ''){
+				this.$message({message: '请输入用户账号', type: 'error'});
 				return;
-			} else {
-				for(let key in menu){
-					menuIds.push(menu[key].id);
+			}else if(this.dialogUser.nickName === ''){
+				this.$message({message: '请输入j昵称', type: 'error'});
+				return;
+			}else if(this.password === ''){
+				this.$message({message: '请输入密码', type: 'error'});
+				return;
+			}else if(this.password !== this.confirmpsd){
+				this.$message({message: '两次输入密码不一置', type: 'error'});
+				return;
+			}else if(this.roleId === ''){
+				this.$message({message: '请选择角色', type: 'error'});
+				return;
+			}
+
+			if(this.dialogUser.type === 'add'){
+				let result = await addUser({
+					'accounts': this.dialogUser.accounts, 
+					'password': this.password,
+					'roleId': this.roleId,
+					'nickName': this.dialogUser.nickName 
+				})
+				console.log('add user...',result)
+				if(result.code === 0){
+					this.$message({
+			          	message: result.message,
+			          	type: 'success'
+			        });
 				}
+			}else{
+
 			}
-			let data = await updataRole({'roleId': this.roleId, 'menuIds': menuIds.join(",") })
-			if(data.code === 0){
-				this.$message({
-		          	message: data.message,
-		          	type: 'success'
-		        });
-			}
-			this.$emit('close-edit-role')
+			this.$emit('query-user-list')
+			this.$emit('close-add-user')
 		}
 	},
 	created(){
