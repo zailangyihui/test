@@ -23,24 +23,7 @@ const state = {
     currentNavi: '0',
     updataRoleList: false, //是否刷新用户角色
     //用户信息
-    user: {
-        accounts: "admin",
-        balanceA: 0,
-        balanceB: 0,
-        balanceC: 0,
-        createTime: "2018-03-22 17:00:09",
-        id: 2,
-        img: null,
-        ip: "192.168.0.168",
-        lastTime: "2018-06-09 10:58:47",
-        level: 2,
-        loginCount: 12,
-        maxSubs: 1000,
-        nikeName: "管理员",
-        parentId: 1,
-        roleId: 2,
-        states: "1"
-    },
+    user: {},
 }
 
 export default new Vuex.Store({

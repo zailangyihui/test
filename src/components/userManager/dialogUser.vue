@@ -17,9 +17,9 @@
 				<el-select v-model="roleId" placeholder="请选择">
 				    <el-option
 				      v-for="item in roleList"
-				      :key="item.roleName"
+				      :key="item.id"
 				      :label="item.roleName"
-				      :value="item.Id">
+				      :value="item.id">
 				    </el-option>
 				</el-select>
 			</el-form-item>
@@ -31,7 +31,7 @@
 	</el-dialog>
 </template>
 <script>
-import { getROleInfo } from '@/api/userManager.js'
+import { getRoleListForUser } from '@/api/userManager.js'
 
 export default {
 	props: ['dialogUser' ],
@@ -42,13 +42,29 @@ export default {
 			password:'',
 			confirmpsd:'',
 			roleId:'',
+			roleName: '',
 			roleList: []
 		}
 	},
+	watch: {
+		'dialogUser.show': function(val){
+			if(val){
+				if(this.dialogUser.type === 'add'){
+					this.getRole()
+				}else{
+					this.getRole({'uid': this.dialogUser.id})
+				}
+			}else{
+				this.roleId = ''
+			}
+		}
+	},
+
 	methods: {
-		async getRole(){
-    		let list =  await getROleInfo()
-    		this.roleList = list.map((item)=>{
+		async getRole(params){
+    		let data =  await getRoleListForUser(params)
+    		console.log(data)
+    		this.roleList = data.roleList.length &&　data.roleList.map((item)=>{
     			return {
     				id: item.id,
     				roleName: item.roleName,
@@ -56,7 +72,12 @@ export default {
     				selected: 0,
     			}
     		})
+    		if(data.roleId!==undefined) {
+    			//let record = this.roleList.find(item => item.id === data.roleId)
+    			this.roleId = data.roleId
+    		}
     	},
+
 		esc(){
 
 		},
@@ -84,7 +105,8 @@ export default {
 		}
 	},
 	created(){
-		this.getRole()
+		
+		
 	}
 }
 </script>

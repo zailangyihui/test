@@ -1,30 +1,76 @@
 import { mapGetters } from 'vuex'
 import {getCookie} from '@/utils/Cookie'
-
+import store from 'vuex'
 const initPage = {
     data(){
         return {
-            
+            isOpenAside: true,
+            pagenavi: {
+                isUnfold: true,
+                total: 0,
+                count: 0,
+                current: 1,
+                sizes: [10, 20, 30, 40],
+                size: 10,
+                layout: this.$store.state.asideState == 'unfold' ? 'total, sizes, prev, pager, next, jumper' : 'prev, pager, next'
+            },
+            tableheight: 530
         }
     },
     computed: {
-        ...mapGetters(['user', 'theme']),
+        ...mapGetters(['user', 'theme', 'asideState']),
     },
     methods: {
-        initUser(){
-            let userStr = getCookie('userinfo')
-            console.log(userStr)
-            if(userStr != 'undefined') {
-                let userinfo = JSON.parse(userStr);
-                console.log('user:', userinfo)
+        initLayout(){
+            var width = document.body.clientWidth;
+            if(width <= 767){
+                this.isOpenAside = false;
+            } else {
+                this.isOpenAside = true;
             }
         },
-        loginOut(){
+        initUser(){
+            if(this.user.id === undefined){
+                let userStr = getCookie('userinfo')
+                if(userStr != 'undefined') {
+                    let userinfo = JSON.parse(userStr);
+                    console.log('[cookie:user]', userinfo)
+                    this.$store.commit('UPDATA_USER', userinfo)
+                }else{
+                    this.$router.push({path: '/'})
+                }
+            }
+        },
 
-        }
+        onChangePageSize(val) {
+            this.pagenavi.size = val;
+            if(Math.ceil(this.pagenavi.total / this.pagenavi.size) >= this.pagenavi.current) {
+                this.getTableData({
+                    'pageCount': (this.pagenavi.current - 1) * this.pagenavi.size, 
+                    'pageSize': this.pagenavi.size,
+                });
+            }
+        },
+        onGotoPage(val) {
+            this.pagenavi.current = val;
+            this.getTableData({
+                'pageCount': (val - 1) * this.pagenavi.size,
+                'pageSize': this.pagenavi.size,
+            })
+        },
     },
     created(){
+        console.log('[vuex:user]', this.user.id)
         this.initUser()
+        this.$nextTick(function(){
+            var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+                this.initLayout();
+                var self = this;
+                window.onresize=function(){  
+                    self.initLayout()
+                }  
+            this.tableheight = height - 280;
+        })
     }
 }
 export { initPage }

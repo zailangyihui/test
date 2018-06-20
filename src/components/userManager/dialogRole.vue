@@ -75,7 +75,6 @@ export default {
 		}
 	},
 	mounted(){
-		console.log(this.dialogRole)
 	}
 }
 </script>

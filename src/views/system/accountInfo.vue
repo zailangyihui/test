@@ -1,10 +1,10 @@
 <template>
-	<div class="">
+	<div class="accountInfo">
 		<el-row :gutter="20">
 			<el-col :span="24">
 				<el-col :span="6">
-					<div class="left-part">
-						<div class="headerpicbox text-center">
+					<div class="aside">
+						<div class="inside text-center">
 							<img src="../../assets/header.jpg" width="100px" class=""/>
 							<h3>{{user.nikeName}}</h3>
 							<p>上次登录：2018-5-16 15:34:36</p>
@@ -63,30 +63,15 @@ export default {
 </script>
 
 <style lang="less" scoped>
-	.inputbox {
-		margin-top: 30px;
-		margin-bottom: 20px;
+@import '../../assets/css/base.less';
+.accountInfo { .p(10px);
+	.aside {padding: 20px 15px; background-color: #fff;
+		h3 {.fs(16px); margin: 20px 0 10px; color: #263238; font-weight: 500; }
+		p {.fs(14px); line-height: 1.6; color: #76838f; }
 	}
-	.inputbox .el-input {
-		margin-bottom: 10px;
+	.inputbox { .mt(30px);.mb(20px);
+		.el-input {.mb(10px) }
 	}
-	.left-part {
-		padding: 40px 15px;
-    	background-color: #fff;
-	}
-	.right-part {
-		padding: 20px;
-		background-color: #fff;
-	}
-	.headerpicbox h3 {
-		margin: 20px 0 10px;
-    	color: #263238;
-    	font-weight: 500;
-    	font-size: 16px;
-	}
-	.headerpicbox p {
-		font-size: 14px;
-    	line-height: 1.6;
-    	color: #76838f;
-	}
+	.right-part {padding: 20px; background-color: #fff; }
+}
 </style>

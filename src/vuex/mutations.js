@@ -1,4 +1,7 @@
 export default {
+    UPDATA_USER : function(state, userinfo){
+        state.user = userinfo
+    },
 	// 设置主题颜色
     UPDATA_THEME : function(state, theme){
         state.theme = theme

@@ -2,9 +2,12 @@
 // common
 import {fetch} from './fetch'
 
+//获取角色列表（统计用户数）
+const  loginIn =  async (params) => { 
+	let response = await fetch({url: 'login.go', method: 'POST', params: params, })
+	return response.data
+}
 
-//登陆 
-const loginIn =  (params) => { return fetch({url: 'login.go', method: 'POST', params: params, }) }
 
 const getMenus = (params) => { return fetch({url: 'meunInit.go', method: 'POST', params: params, }) }
 

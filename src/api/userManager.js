@@ -3,15 +3,15 @@
 import store from '../vuex/store'
 import {fetch} from './fetch'
 
-//获取角色列表
-const getROleInfo = async (params) => {
-	let response = await fetch({url: 'getRoleInfo.go', method: 'POST', params: params, })
-	return response.data
-}
-
 //获取角色列表（统计用户数）
 const  getRoleList =  async (params) => { 
 	let response = await fetch({url: 'roleInit.go', method: 'POST', params: params, })
+	return response.data
+}
+
+//根据用户ID获取角色
+const  getRoleListForUser =  async (params) => { 
+	let response = await fetch({url: 'getRoleList.go', method: 'POST', params: params, })
 	return response.data
 }
 
@@ -51,6 +51,6 @@ const deleteUser = async (params) => {
 	return response
 }
 
-export { getRoleList, getROleInfo, getUserList, getRoleTree, addRole, updataRole, deleteRole, deleteUser }
+export { getRoleList, getROleInfo, getUserList, getRoleTree, addRole, updataRole, deleteRole, deleteUser, getRoleListForUser }
 
 

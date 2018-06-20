@@ -67,21 +67,20 @@ export default {
 	},
 	methods: {
 		submitForm(formName) {
-			this.$refs[formName].validate((valid) => {
+			this.$refs[formName].validate( async (valid) => {
 				if(valid) {
-					var self = this;
-					loginIn(this.ruleForm2).then((res)=>{
-						console.log(res)
-						if(self.checked) {
-							setCookie('user', self.ruleForm2.accounts, 360); //保存帐号到cookie，有效期360天
-							setCookie('pswd', self.ruleForm2.password, 360); //保存帐号到cookie，有效期360天
-						} else {
-							delCookie('user');
-							delCookie('pswd');
-						}
-						setCookie('userinfo', JSON.stringify(res.data.data), 360);
-						self.$router.push('/about.go');
-					});
+					if(this.checked) {
+						setCookie('user', this.ruleForm2.accounts, 360); //保存帐号到cookie，有效期360天
+						setCookie('pswd', this.ruleForm2.password, 360); //保存帐号到cookie，有效期360天
+					} else {
+						delCookie('user');
+						delCookie('pswd');
+					}
+					let result = await loginIn(this.ruleForm2)
+					console.log('login:', result)
+					setCookie('userinfo', JSON.stringify(result), 360);
+					this.$store.commit('UPDATA_USER', result)
+					this.$router.push('/about.go');
 				} else {
 					console.log('error submit!!');
 					return false;

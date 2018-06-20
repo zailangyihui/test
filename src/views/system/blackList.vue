@@ -6,7 +6,7 @@
 					<el-input v-model="keyWords" size="small" placeholder="输入事件/内容进行搜索"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button type="primary" @click="queryData" size="small">查询</el-button>
+					<el-button type="primary" @click="getTableData" size="small">查询</el-button>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" @click="dialogBlack.show=true" size="small">添加</el-button>
@@ -31,46 +31,51 @@
 		<div class="block">
 			<el-pagination 
 				@size-change="onChangePageSize" 
-				@current-change="pageNavi" 
-				:current-page="currentPage" 
-				:page-sizes="[10, 20, 30, 40]" 
-				:page-size="100" 
-				:layout="isOpenAside ? 'total, sizes, prev, pager, next, jumper' : 'prev, pager, next'" 
-				:total="total"></el-pagination>
+				@current-change="onGotoPage" 
+				:current-page="pagenavi.current" 
+				:page-sizes="pagenavi.sizes" 
+				:page-size="pagenavi.size" 
+				:layout="pagenavi.layout" 
+				:total="pagenavi.total"></el-pagination>
 		</div>
 
 		<dialog-black 
 		:dialogBlack="dialogBlack"
-		v-on:updata-black-list="queryBackList"
+		v-on:updata-black-list="getTableData"
 		v-on:close-add-black="dialogBlack.show=false"></dialog-black>
 	</section>
 </template>
 
 <script>
+import { initPage } from '@/mixins/initPage.js'
 import dialogBlack from '@/components/blackList/dialogBlack'
 import { getBlackList, deleteBlackRecord } from '@/api/blackList.js'
 
 export default {
+	name: 'BlackList',
+	mixins:[initPage],
 	components: { dialogBlack },
 	data() {
 		return {
-			isOpenAside: true,
 			keyWords: '',
 			blackList: [],
 			dialogBlack : {
 				show: false,
 			},
-			total: 0,
-			currentPage: 1,
-			pageSize: 10,
-			tableheight: "530"
 		}
 	},
 	methods: {
-		async queryBackList(params){
-			let result = await getBlackList(params)
+		async getTableData(params){
+			let data = {
+				'pageCount': this.pagenavi.count, 
+				'pageSize': this.pagenavi.size, 
+				'search': this.keyWord
+			}
+			let queryData = Object.assign(data, params)
+			let result = await getBlackList(queryData)
+
 			this.blackList = result.rows
-			this.total = result.total
+			this.pagenavi.total = result.total
 		},
 		deleteRecord(row){
 			console.log(row.id)
@@ -79,50 +84,17 @@ export default {
 	          	cancelButtonText: '取消',
 	          	type: 'warning'
 	        }).then( async () => {
-	        	console.log('1111')
 	        	let result = await deleteBlackRecord({ 'id': row.id })
 	        	if(result.code === 0){
 	        		this.$message({type: 'success', message: '删除成功!'})
-	        		if(this.currentPage == Math.ceil(this.total/this.pageSize) && this.total%this.pageSize == 1){
-			        	this.currentPage -= 1;
-			        }
 	        		this.queryData()
 	        	}
 	        }).catch(() => {});
 		},
-		queryData(){
-			this.queryBackList({
-				'pageCount': (this.currentPage - 1) * this.pageSize, 
-				'pageSize': this.pageSize,
-			});
-		},
-		onChangePageSize(val) {
-			this.pageSize = val;
-			if(Math.ceil(this.total / this.pageSize) >= this.currentPage) {
-				this.queryUserList({
-					'pageCount': (this.currentPage - 1) * this.pageSize, 
-					'pageSize': this.pageSize,
-				});
-			}
-		},
-		pageNavi(val) {
-			this.currentPage = val;
-			this.queryUserList({
-				'pageCount': (val - 1) * this.pageSize,
-				'pageSize': this.pageSize,
-			})
-		},
+
 	},
 	created() {
-		this.queryBackList({
-			'pageCount': 0,
-			'pageSize': this.pageSize
-		});
-		this.$nextTick(function(){
-			var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-			this.tableheight = h - 280
-		})
-		
+		this.getTableData();
 	},
 }
 </script>

@@ -2,7 +2,7 @@
 	<section class="userManager" :class="isOpenAside ? 'open' : 'close'">
 		<user-manager-aside class="el-aside-usermanager"
 		v-on:toggle-aside="toggleAside"
-		v-on:query-user-list="queryUserList"
+		v-on:query-user-list="getTableData"
 		v-on:updata-role-tree="updataRoleTree" 
 		v-on:add-role="addRole"
 		v-on:edit-role="editRole"></user-manager-aside>
@@ -11,10 +11,10 @@
 			<el-col :span="24" class="filters">
 				<el-form :inline="true">
 					<el-form-item>
-						<el-input v-model="searchKey" size="small" placeholder="输入用户名/昵称查询"></el-input>
+						<el-input v-model="keyWord" size="small" placeholder="输入用户名/昵称查询"></el-input>
 					</el-form-item>
 					<el-form-item>
-						<el-button type="primary" @click="queryUserList({'roleId': roleId, 'search': searchKey })" size="small">查询</el-button>
+						<el-button type="primary" @click="getTableData" size="small">查询</el-button>
 					</el-form-item>
 					<el-form-item>
 						<el-button type="primary" @click="addUser" size="small">添加</el-button>
@@ -46,12 +46,12 @@
 			<div class="block">
 				<el-pagination 
 				@size-change="onChangePageSize" 
-				@current-change="pageNavi" 
-				:current-page="currentPage" 
-				:page-sizes="[10, 20, 30, 40]" 
-				:page-size="100" 
-				:layout="isOpenAside ? 'total, sizes, prev, pager, next, jumper' : 'prev, pager, next'" 
-				:total="total"></el-pagination>
+				@current-change="onGotoPage" 
+				:current-page="pagenavi.current" 
+				:page-sizes="pagenavi.sizes" 
+				:page-size="pagenavi.size" 
+				:layout="pagenavi.layout" 
+				:total="pagenavi.total"></el-pagination>
 			</div>
 		</div>
 
@@ -71,19 +71,19 @@ import userManagerAside from '@/components/userManager/aside'
 import dialogRole from '@/components/userManager/dialogRole'
 import dialogUser from '@/components/userManager/dialogUser'
 import { getRoleTree, getUserList } from '@/api/userManager.js'
+import { initPage } from '@/mixins/initPage.js'
 
 export default {
+	name: 'UserManager',
+	mixins:[initPage],
 	components: {
 		userManagerAside, dialogRole, dialogUser
 	},
 	data() {
 		return {
-			isOpenAside: true,
 			roleId: '',
-
 			userList: [],
-			searchKey: '',
-
+			keyWord: '',
 			dialogRole: {
 				show: false,
 				title: '',
@@ -94,20 +94,14 @@ export default {
 				menuTree: [],
 				checkedTree: [],
 			},
-
 			dialogUser: {
 				show: false,
 				title: '',
+				name: '',
 				id: '',
-				type: '',
+				type: 'add',
 				loading: false
 			},
-
-			total: 0,
-			currentPage: 1,
-			pageSize: 10,
-
-			tableheight: "530",
 		}
 	},
 	
@@ -117,8 +111,19 @@ export default {
 			this.dialogRole.menuTree = data.menu
 			this.dialogRole.checkedTree = data.defaultMenu
 		},
-		async queryUserList(params){
-			let result = await getUserList(params)
+		async getTableData(params){
+			let data = {
+				'roleId': this.roleId,
+				'pageCount': this.pagenavi.count, 
+				'pageSize': this.pagenavi.size, 
+				'search': this.keyWord,
+			}
+			let queryData = Object.assign(data, params)
+			if(queryData.roleId){
+				this.roleId = queryData.roleId
+			}
+			let result = await getUserList(queryData)
+
 			this.userList = result.data.rows
 			this.total = result.data.total
 		},
@@ -129,7 +134,7 @@ export default {
 			this.dialogRole.roleId = ''
 			this.dialogRole.roleName = ''
 			this.dialogRole.type = 'add'
-			this.updataRoleTree({'roleId': ''})
+			this.updataRoleTree()
 			this.dialogRole.loading = false
 		},
 		editRole(id, name){
@@ -146,13 +151,15 @@ export default {
 			this.dialogUser.show = true;
 			this.dialogUser.title = `添加用户`
 			this.dialogUser.type = 'add'
-	      	console.log('add user...', this.shwoUserDialog)
+	      	console.log('add user...')
 		},
 		eidtUser(row){
 			console.log(row)
 			this.dialogUser.show = true;
 			this.dialogUser.title = `编缉用户（${row.nikeName}）`
 			this.dialogUser.type = 'edit'
+			this.dialogUser.id = row.id
+			this.dialogUser.accounts =row.accounts
 		},
 		deleteUser(row){
 			console.log(row)
@@ -164,7 +171,7 @@ export default {
 	        	let result = await deleteUser({ 'userId': row.id })
 	        	if(result.code === 0){
 	        		this.$message({type: 'success', message: '删除成功!'}) 
-	        		this.queryUserList({'roleId': this.roleId})
+	        		this.getTableData()
 	        	}
 	        }).catch(() => {          
 	        });
@@ -176,46 +183,9 @@ export default {
 				this.isOpenAside = false
 			}
 		},
-		onChangePageSize(val) {
-			this.pageSize = val;
-			if(Math.ceil(this.total / this.pageSize) >= this.currentPage) {
-				this.queryUserList({
-					'pageCount': (this.currentPage - 1) * this.pageSize, 
-					'pageSize': this.pageSize,
-				});
-			}
-		},
-		pageNavi(val) {
-			this.currentPage = val;
-			this.queryUserList({
-				'pageCount': (val - 1) * this.pageSize,
-				'pageSize': this.pageSize,
-			})
-		},
-		init(){
-			var width = document.body.clientWidth;
-			//console.log(width)
-            if(width <= 767){
-				this.isOpenAside = false;
-			} else {
-				this.isOpenAside = true;
-			}
-		},
 	},
 	created() {
-		this.queryUserList({
-			'pageCount': 0, 
-			'pageSize': this.pageSize,
-		});
-		this.$nextTick(function(){
-			var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-				this.init();
-				var self = this;
-				window.onresize=function(){  
-					self.init()
-	            }  
-			this.tableheight = height - 280;
-		})
+		this.getTableData();
 	},
 }
 </script>
