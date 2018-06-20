@@ -14,6 +14,7 @@ export const topMenus = (state) => {
             id: item.id,
             text: item.text,
             icon: item.icon,
+            url: item.url,
             checked: item.checked,
         }
     })
@@ -28,6 +29,7 @@ export const leftMenus = (state) => {
             pid: item.pid,
             text: item.text,
             icon: item.icon,
+            url: item.url,
             children: item.children,
         }
     })

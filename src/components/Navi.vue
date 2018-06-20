@@ -5,7 +5,7 @@
 		    	v-for="(item, index) in navi"
 		    	:key="index"
 		    	:label="item.text"
-		    	:name="String(item.id)"
+		    	:name="item.url"
 		  	>
 		  	</el-tab-pane>
 		</el-tabs>
@@ -14,7 +14,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { TYPEID } from '@/utils/Link'
 
 export default {
 	name: 'Navi',
@@ -36,34 +35,37 @@ export default {
 				this.packupClass = ''
 			}
 		},
-		'currentNavi': function(value){
-			console.log('-----------',value)
-			this.$store.commit('UPDATA_CURRENT_LEFT_MENU', value)
-			this.$router.push({'path': TYPEID[value]})
+		'currentNavi': function(url){
+			console.log('-----------',url)
+			this.$store.commit('UPDATA_CURRENT_LEFT_MENU', url)
+			this.$router.push({'path': url})
 		}
 	},
     methods:{
     	gotoPage(tab){
-    		console.log(tab.name, TYPEID[tab.name])
-    		this.$store.commit('UPDATA_CURRENT_NAVI', tab.name)
+    		console.log(tab)
+    		this.$store.commit('UPDATA_CURRENT_NAVI', tab.name) //url
     	},
-    	removeTab(id) {
-    		console.log('id:', id)
-	        let tabs = this.navi;
-	        let activeName = this.currentNavi;
-	        if (activeName == Number(id)) {
-	          	tabs.forEach((tab, index) => {
-	            	if (tab.id === Number(id)) {
-	              		let nextTab = tabs[index + 1] || tabs[index - 1];
+    	removeTab(url) {
+    		console.log('url:', url)
+	        let navis = this.navi;
+	        let currentUrl = this.currentNavi;
+	        console.log('currentUrl:',currentUrl, url)
+	        if (currentUrl === url) {
+	        	console.log('--------------')
+	          	navis.forEach((item, index) => {
+	            	if (item.url === url) {
+	            		console.log('yes')
+	              		let nextTab = navis[index + 1] || navis[index - 1];
 	              		if (nextTab) {
-	                		activeName = nextTab.id;
+	                		currentUrl = nextTab.url;
 	              		}
 	            	}
 	          	});
 	        }
-	        this.$store.commit('UPDATA_CURRENT_NAVI', activeName)
-	        this.$store.commit('UPDATA_NAVI', Number(id))
-	        this.$router.push({path: TYPEID[id]})
+	        this.$store.commit('UPDATA_CURRENT_NAVI', currentUrl)
+	        this.$store.commit('UPDATA_NAVI', url)
+	      //  this.$router.push({path: TYPEID[id]})
 	     }
     },
     created(){

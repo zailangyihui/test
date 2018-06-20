@@ -19,8 +19,8 @@ const state = {
     currentTopMenu: '', //当前顶部菜单
     currentLeftMenu: '',
     asideState: 'unfold', //侧边菜单状态 收起 packup or 展开 unfold
-    navi: [{ id: 0, text: '首页' }], //tab菜单
-    currentNavi: '0',
+    navi: [{ url: '/about.go', text: '首页' }], //tab菜单
+    currentNavi: '/about.go',
     updataRoleList: false, //是否刷新用户角色
     //用户信息
     user: {},

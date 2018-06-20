@@ -2,12 +2,12 @@
 	<el-aside :class="asideState">
 		<el-row>
 			<el-col :span="24">
-				<el-menu :default-active="String(currentLeftMenu)" @open="handleOpen" @close="handleClose" 
+				<el-menu :default-active="String(currentLeftMenu)" @open="onOpen" @close="onClose" 
 				background-color="#22323A" text-color="#93A3AC" active-text-color="#50A8F6"
 				>
 					<template v-for="(item,index) in leftMenus">
 						<el-menu-item :index="String(item.id)" 
-						:class="{'active' :  currentLeftMenu==item.id}"
+						:class="{'active' :  currentLeftMenu==item.url}"
 						v-if="!item.children.length" 
 						@click="gotoPage(item)">
 							<i class="iconfont" :class="item.icon"></i>
@@ -21,8 +21,8 @@
 							<el-menu-item-group v-if="item.children">
 								<template v-for="(itemChild, indexChild) in item.children">
 									<el-menu-item :index="String(itemChild.id)" 
-									:class="{'active' :  currentLeftMenu==itemChild.id}"
-									@click="gotoPage(itemChild)"><i class="iconfont" :class="item.icon"></i>{{itemChild.text}}</el-menu-item>
+									:class="{'active' :  currentLeftMenu==itemChild.url}"
+									@click="gotoPage(itemChild)"><i class="iconfont" :class="itemChild.icon"></i>{{itemChild.text}}</el-menu-item>
 								</template>
 							</el-menu-item-group>
 						</el-submenu>
@@ -35,7 +35,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { TYPEID } from '@/utils/Link'
 export default {
 	name: 'Aside',
 	data() {
@@ -53,19 +52,18 @@ export default {
 		}
 	},
     methods:{
-    	handleOpen(){
+    	onOpen(){
     		console.log('open...')
     		this.$store.commit('UPDATA_ASIDE_MENUS_STATE', 'unfold')
     	},
-    	handleClose(){
+    	onClose(){
     		console.log('close...')
     	},
     	gotoPage(obj){
-    		console.log('url:',obj.id)
+    		console.log('url:',obj.url)
     		this.$store.commit('ADD_NAVI', obj)
-    		this.$store.commit('UPDATA_CURRENT_NAVI', obj.id)
-    		this.$store.commit('UPDATA_CURRENT_LEFT_MENU', obj.id)
-    		this.$router.push({'path': TYPEID[obj.id]})
+    		this.$store.commit('UPDATA_CURRENT_NAVI', obj.url)
+    		this.$store.commit('UPDATA_CURRENT_LEFT_MENU', obj.url)
     	}
     },
     created(){
@@ -87,12 +85,14 @@ export default {
 	.el-menu { background: @bgMenus;
 		.el-menu-item {.w(100%);.rel; color:@menusColor;
 			.iconfont{.fs(16px);.mr(5px);}
-			&.active{  }
+			&.active{ color: #50A8F6 !important;
+				i {color: #50A8F6 !important;}
+			}
 			&:hover{ background: @bgHover };
 		}
 		.el-submenu { 
 			.iconfont{.fs(16px);.mr(5px);}
-			span {color: @menusColor}
+			span {color: @menusColor !important;}
 			&:hover{ background: @bgHover };
 		}
 		.el-menu-item-group__title {.hide;}

@@ -1,6 +1,6 @@
 <template>
 	<el-header :class="theme">
-		<div class="logo">点餐后台管理</div>
+		<div class="logo"><router-link :to="{path: '/about.go'}">点餐后台管理</router-link></div>
 		<span class="arrow" @click="toggleLeftMenus"><i class="el-icon-menu"></i></span>
 		<div class="menu">
 			<ul>
@@ -68,6 +68,7 @@ export default {
 .el-header{ .fix; top: 0; left: 0px; right: 0; z-index: 2;.h(60px); background: @blue; color: #333; .tc;.ovh;
 	.logo {
 		.fl;.tc;.w(220px);.h(60px);.lh(60px); color: @white;.fs(20px); border-right: 1px solid rgba(238, 241, 146, 0.3); 
+		a {color: @white;}
 	}
 	.arrow {.fl; .h(60px);.lh(60px);.p(0 15px); color: @white; cursor: pointer;}
 	.menu {

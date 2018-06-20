@@ -11,11 +11,11 @@ export default {
         state.asideState = content
     },
     //更新nai
-    UPDATA_NAVI : function(state, id){
-        state.navi = state.navi.filter(tab => tab.id !== id);
+    UPDATA_NAVI : function(state, url){
+        state.navi = state.navi.filter(tab => tab.url !== url);
     },
-    UPDATA_CURRENT_NAVI: function(state, id){
-        state.currentNavi = String(id)
+    UPDATA_CURRENT_NAVI: function(state, url){
+        state.currentNavi = url
     },
     ADD_NAVI: function(state, obj){
         let record = state.navi.find(item => item.id === obj.id) //记录
