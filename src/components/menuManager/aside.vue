@@ -57,6 +57,7 @@
             initMenuData(arr){
                 this.menuList = arr.map((item, index)=>{
                     return {
+                        icon: item.icon,
                         id: item.id,
                         text: item.text,
                         selected: index === 0 ? 1 : 0,
