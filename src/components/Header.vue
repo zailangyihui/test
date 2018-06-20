@@ -10,7 +10,7 @@
 				:data-id="item.id"  
 				@click="changeMenu(item.id)"
 				>
-					<i class="iconfont icon-diancan1"></i>
+					<i class="iconfont" :class="item.icon"></i>
 					<span>{{item.text}}</span>
 				</li>
 			</ul>

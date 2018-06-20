@@ -10,12 +10,12 @@
 						:class="{'active' :  currentLeftMenu==item.id}"
 						v-if="!item.children.length" 
 						@click="gotoPage(item)">
-							<i class="iconfont icon-Management"></i>
+							<i class="iconfont" :class="item.icon"></i>
 							<span slot="title">{{item.text}}</span>
 						</el-menu-item>
 						<el-submenu :index="String(item.id)" v-else>
 							<template slot="title">
-								<i class="iconfont icon-Management" :class="item.icon"></i>
+								<i class="iconfont" :class="item.icon"></i>
 								<span>{{item.text}}</span>
 							</template>
 							<el-menu-item-group v-if="item.children">
