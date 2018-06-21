@@ -31,6 +31,7 @@
         name:'MenuManagerAside',
         data(){
             return {
+                currentId:0,
                 isopen:true,
                 menuList: []
             }
@@ -45,24 +46,41 @@
         },
         methods:{
             changeMenuTree(menuid){
-                console.log("43",menuid)
-                this.menuList.forEach((item) => {
-                    item.selected = 0
-                    if(item.id == menuid){
-                        item.selected = 1
-                        this.$emit('show-menu-tree',item.id);
-                    }
-                })
+                this.findCurrentId(menuid);
             },
             initMenuData(arr){
                 this.menuList = arr.map((item, index)=>{
                     return {
+                        url: item.url,
                         icon: item.icon,
                         id: item.id,
                         text: item.text,
                         selected: index === 0 ? 1 : 0,
                     }
+                });
+                if(this.currentId === 0){
+                    if(this.menuList && this.menuList[0]){
+                        this.currentId = this.menuList[0].id;
+                    }
+                } else {
+                    this.findCurrentId(this.currentId);
+                }
+            },
+            findCurrentId(id){
+                var flag = true;
+                this.menuList.forEach((item) => {
+                    item.selected = 0
+                    if(item.id == id){
+                        flag = false;
+                        item.selected = 1;
+                        this.currentId = item.id;
+                        this.$emit('show-menu-tree',item.id);
+                    }
                 })
+                if(flag && this.menuList && this.menuList[0]){
+                    this.currentId = this.menuList[0].id;
+                    this.menuList[0].selected = 1;
+                }
             },
             toggleAside(){
                 this.isopen = !this.isopen
@@ -73,7 +91,6 @@
                 }
             },
             delMenu(menuId){
-                console.log(menuId,"======")
 				this.$confirm('您确定删除该菜单吗?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -94,7 +111,7 @@
             },
             async updateMenu(){
                 let data = await getMenus({uid: this.user.id});
-                this.$store.commit('UPDATA_MENUS', data.data.treeMenu)
+                this.$store.commit('UPDATA_MENUS', data.data.treeMenu);
             }
         },
         created(){

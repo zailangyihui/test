@@ -2,8 +2,8 @@
 export const env = state => state.env
 export const user = state => state.user
 export const theme = (state) => {
-        return state.theme
-     
+    return state.theme
+
 }
 export const asideState = state => state.asideState
 export const updataRoleList = state => state.updataRoleList
@@ -37,5 +37,3 @@ export const leftMenus = (state) => {
 export const navi = state => state.navi
 export const currentNavi = state => state.currentNavi
 export const currentLeftMenu = state => state.currentLeftMenu
-
-

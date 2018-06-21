@@ -17,7 +17,11 @@
                 </div>
             </div>
         </div>
-        <div class="">
+        <div class="from-item">
+            <label>菜单路径：</label>
+			<el-input v-model="dialogMenu.menuUrl" auto-complete="off" placeholder="请输入菜单路径"></el-input>
+        </div>  
+        <div class="from-item">
             <label>权限分配：</label>
             <el-select v-model="dialogMenu.roleIds" multiple collapse-tags style="width: 100%;" placeholder="请选择" :loading="dialogMenu.loading">
                 <el-option v-for="item in dialogMenu.roleArr" :key="item.roleName" :label="item.roleName" :value="item.id">
@@ -75,7 +79,7 @@
             },
             async updateMenu(){
                 let data = await getMenus({uid: this.user.id});
-                this.$store.commit('UPDATA_MENUS', data.data.treeMenu)
+                this.$store.commit('UPDATA_MENUS', data.data.treeMenu);
             }
         },
     }

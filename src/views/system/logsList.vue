@@ -3,7 +3,7 @@
 		<el-col :span="24" class="filter">
 			<el-form :inline="true">
 				<el-form-item>
-					<el-date-picker size="small" v-model="day" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd">
+					<el-date-picker size="small" v-model="day | dateFormat('YYYY-MM-DD')" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd">
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item>
@@ -50,7 +50,7 @@ export default {
 	data() {
 		return {
 			keyWord: '',
-			day: '',
+			day: new Date(),
 			logsList: [],
 		}
 	},
@@ -64,13 +64,12 @@ export default {
 			}
 			let queryData = Object.assign(data, params)
 			let result = await getLogsList(queryData)
-
-			this.logsList = result.data.rows
-			this.pagenavi.total = result.data.total
+			this.logsList = result.rows;
+			this.pagenavi.total = result.total;
 		},
 	},
 	created(){
-		this.getTableData();
+		//this.getTableData();
 	}
 }
 </script>

@@ -101,11 +101,10 @@
 			'menus':function(arr){
 				if(arr && arr.length){
 					this.menuTreeData = [arr[0]];
+					this.menuName = '';
+					this.MenuDetail.roleList = [];
+					this.MenuDetail.roleArr = [];
 				}
-			},
-			'currentMenuId':function(id){
-				let record = this.menus.find(item => item.id == id)
-				this.menuTreeData = [record];
 			},
 		},
 		methods: {
@@ -113,6 +112,7 @@
 				this.initMenuDialog();
 				this.dialogMenu.title = "添加菜单";
 				this.dialogMenu.type = "add";
+				this.dialogMenu.menuUrl = '/';
 				this.dialogMenu.parentId = parentId;
 				let list = await queryAllRole();
 				this.dialogMenu.roleIds = [];
@@ -129,6 +129,7 @@
 				this.dialogMenu.title = "修改菜单";
 				this.dialogMenu.type = "editor";
 				this.dialogMenu.menuId = menuData.id;
+				this.dialogMenu.menuUrl = menuData.url;
 				let data = await getMenuRole({menuId:menuData.id});
 				this.dialogMenu.roleArr = data.roleList;
 				this.dialogMenu.roleIds = data.roleIds;
@@ -150,7 +151,8 @@
 				}
 			},
 			showMenuTree(menuId){
-				this.currentMenuId = menuId;
+				let record = this.menus.find(item => item.id == menuId);
+				this.menuTreeData = [record];
 			},
 			init() {
 				var w = document.body.clientWidth;
@@ -164,6 +166,7 @@
 			async nodeclick(menus){
 				console.log(menus)
 				this.MenuDetail.menuName = menus.text;
+				this.currentMenuId = menus.id;
 				let data = await getMenuRole({menuId:menus.id});
 				this.MenuDetail.roleList = data.roleList;
 				this.MenuDetail.roleArr = data.roleIds;
@@ -173,7 +176,8 @@
 		        if (!data.children) {
 		          this.$set(data, 'children', []);
 		        }
-		        data.children.push(newChild);
+				data.children.push(newChild);
+				this.editorMenu(newChild);
 		    },
 		    remove(node, data) {
 				this.$confirm('您确定删除该菜单吗?', '提示', {
@@ -206,7 +210,7 @@
 			},
 			async updateMenu(){
                 let data = await getMenus({uid: this.user.id});
-                this.$store.commit('UPDATA_MENUS', data.data.treeMenu)
+				this.$store.commit('UPDATA_MENUS', data.data.treeMenu);
             }
 		}
 	}
