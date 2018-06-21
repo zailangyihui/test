@@ -9,17 +9,8 @@ require('./assets/css/reset-ele-ui.css');
 
 import store from './vuex/store'
 import axios from 'axios'
-import moment from 'moment'
 Vue.prototype.$http = axios
-
-Vue.filter('dateFormat', function(dataStr, pattern = 'YYYY-MM-DD HH:mm:ss') {
-    return moment(dataStr).format(pattern)
-})
-
-Vue.prototype.$eventHub = new Vue()
-
 Vue.config.productionTip = false
-
 
 Vue.use(ElementUI);
 

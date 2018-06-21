@@ -94,23 +94,28 @@ export default {
 				this.$message({message: '请选择角色', type: 'error'});
 				return;
 			}
-
+			let result = null
 			if(this.dialogUser.type === 'add'){
-				let result = await addUser({
+				result = await addUser({
 					'accounts': this.dialogUser.accounts, 
 					'password': this.password,
 					'roleId': this.roleId,
 					'nickName': this.dialogUser.nickName 
 				})
 				console.log('add user...',result)
-				if(result.code === 0){
-					this.$message({
-			          	message: result.message,
-			          	type: 'success'
-			        });
-				}
 			}else{
-
+				result = await updataUser({
+					'nickName': this.dialogUser.nikeName,
+					'password': this.password,
+					'roleId': this.roleId,
+					'uid': this.dialogUser.id
+				})
+			}
+			if(result.code === 0){
+				this.$message({
+		          	message: result.message,
+		          	type: 'success'
+		        });
 			}
 			this.$emit('query-user-list')
 			this.$emit('close-add-user')

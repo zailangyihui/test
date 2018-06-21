@@ -3,7 +3,7 @@
 		<el-col :span="24" class="filter">
 			<el-form :inline="true">
 				<el-form-item>
-					<el-date-picker size="small" v-model="day | dateFormat('YYYY-MM-DD')" type="date" placeholder="选择日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd">
+					<el-date-picker size="small" v-model="day" type="date" placeholder="选择日期" format="yyyy-MM-dd" >
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item>
@@ -44,13 +44,14 @@
 <script>
 import { initPage } from '@/mixins/initPage.js'
 import { getLogsList } from '@/api/logList.js'
+import moment from 'moment'
 export default {
 	name: 'LogsList',
 	mixins:[initPage],
 	data() {
 		return {
 			keyWord: '',
-			day: new Date(),
+			day: moment(new Date()).format('YYYY-MM-DD'),
 			logsList: [],
 		}
 	},
@@ -70,6 +71,7 @@ export default {
 	},
 	created(){
 		//this.getTableData();
+		console.log(this.day)
 	}
 }
 </script>

@@ -53,9 +53,10 @@ const addUser = async (params) => {
 
 //更新用户
 const updataUser = async (params) => {
-	let response = await fetch({url: 'managerRegister.go', method: 'POST', params: params, })
+	let response = await fetch({url: 'updateUserInfo.go', method: 'POST', params: params, })
 	return response
 }
+
 
 //删除用户
 const deleteUser = async (params) => {
