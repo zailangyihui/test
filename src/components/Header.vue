@@ -56,7 +56,6 @@ export default {
     },
     created(){
     	getMenus({uid: this.user.id}).then( res => {
-			console.log(res.data,"--------------")
     		this.$store.commit('UPDATA_MENUS', res.data.treeMenu)
     		this.currentID = this.topMenus[0].id
     	})

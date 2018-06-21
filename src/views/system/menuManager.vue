@@ -9,8 +9,17 @@
 		<div class="main">
 			<el-row :gutter="30">
 				<el-col :span="14">
-					<el-tree :data="menuTreeData" node-key="id" :expand-on-click-node="false" :props="defaultProps" :highlight-current="true" default-expand-all @node-click="nodeclick">
-						<span class="custom-tree-node" slot-scope="{ node, data }">
+					<el-tree 
+					ref="tree"
+					:data="menuTreeData" 
+					node-key="id"
+					:expand-on-click-node="false" 
+					:props="defaultProps" 
+					:highlight-current="true" 
+					default-expand-all
+					@node-click="nodeclick" >
+						<slot>test11111</slot>
+						<div class="custom-tree-node" :data-id="data.id" :class="{'is-current': data.id === currentMenu.id}" slot-scope="{ node, data }">
 					        <span><i class="iconfont" :class="node.icon"></i>&nbsp;&nbsp;{{ node.label }}</span>
 					        <span>
 							  <el-button
@@ -22,7 +31,7 @@
 					          <el-button
 					            type="text"
 					            size="mini"
-					            @click.stop="() => append(data)">
+					            @click.stop="() => addMenu(data.pid)">
 					            添加
 					          </el-button>
 					          <el-button
@@ -32,7 +41,7 @@
 					            删除
 					          </el-button>
 					        </span>
-					      </span>
+					      </div>
 					</el-tree>
 				</el-col>
 				<el-col :span="10">
@@ -41,7 +50,7 @@
 			</el-row>
 		</div>
 		<!--修改角色模态框-->
-		<menu-manager-dialog :dialogMenu="dialogMenu"></menu-manager-dialog>
+		<menu-manager-dialog :dialogMenu="dialogMenu" @updata-current-menu="updataCurrentMenu"></menu-manager-dialog>
 	</section>
 </template>
 
@@ -79,24 +88,14 @@
 					label: 'text'
 				},
 				menuTreeData:[],
-				currentMenuId:0,
+				currentMenu: '',
 			}
 		},
 		computed:{
 			...mapGetters(['menus','user'])
 		},
-		mounted() {
-			this.init();
-			var me = this;
-			window.onresize = function() {
-				me.init()
-			}
-		},
-		created(){
-			if(this.menus.length){
-				this.menuTreeData = [this.menus[0]];
-			}
-		},
+
+		
 		watch: {
 			'menus':function(arr){
 				if(arr && arr.length){
@@ -108,7 +107,28 @@
 			},
 		},
 		methods: {
+			async deleteMenu(menuId){
+				let data = await deleteMenu({'menuId': menuId});
+				this.$message({
+					message: data.message,
+					type: 'success'
+				});
+				this.updateMenu();
+			},
+			async updateMenu(){
+                let data = await getMenus({uid: this.user.id});
+				this.$store.commit('UPDATA_MENUS', data.data.treeMenu);
+            },
+            async nodeclick(menus){
+				console.log(menus)
+				this.MenuDetail.menuName = menus.text;
+				this.currentMenu = menus;
+				let data = await getMenuRole({menuId:menus.id});
+				this.MenuDetail.roleList = data.roleList;
+				this.MenuDetail.roleArr = data.roleIds;
+			},
 			async addMenu(parentId) {
+				console.log('parentId', parentId)
 				this.initMenuDialog();
 				this.dialogMenu.title = "添加菜单";
 				this.dialogMenu.type = "add";
@@ -120,10 +140,6 @@
 				this.dialogMenu.loading = false;
 			},
 			async editorMenu(menuData){
-				if(menuData.id == 0){
-					this.addMenu(menuData.parentId);
-					return;
-				}
 				this.initMenuDialog();
 				this.dialogMenu.menuName = menuData.text;
 				this.dialogMenu.title = "修改菜单";
@@ -154,30 +170,10 @@
 				let record = this.menus.find(item => item.id == menuId);
 				this.menuTreeData = [record];
 			},
-			init() {
-				var w = document.body.clientWidth;
-				console.log(w)
-				if(w <= 767) {
-					this.isOpenAside = false;
-				} else {
-					this.isOpenAside = true;
-				}
-			},
-			async nodeclick(menus){
-				console.log(menus)
-				this.MenuDetail.menuName = menus.text;
-				this.currentMenuId = menus.id;
-				let data = await getMenuRole({menuId:menus.id});
-				this.MenuDetail.roleList = data.roleList;
-				this.MenuDetail.roleArr = data.roleIds;
-			},
+
+			
 			append(data) {
-		        const newChild = { id: 0, text: '新菜单', children: [], parentId: data.id };
-		        if (!data.children) {
-		          this.$set(data, 'children', []);
-		        }
-				data.children.push(newChild);
-				this.editorMenu(newChild);
+				this.addMenu();
 		    },
 		    remove(node, data) {
 				this.$confirm('您确定删除该菜单吗?', '提示', {
@@ -200,19 +196,16 @@
 					});
 				});
 			},
-			async deleteMenu(menuId){
-				let data = await deleteMenu({'menuId': menuId});
-				this.$message({
-					message: data.message,
-					type: 'success'
-				});
-				this.updateMenu();
+			updataCurrentMenu(){
+				console.log('updata-current-menu:')
+				this.$refs.tree.setCurrentNode(this.currentMenu)
 			},
-			async updateMenu(){
-                let data = await getMenus({uid: this.user.id});
-				this.$store.commit('UPDATA_MENUS', data.data.treeMenu);
-            }
-		}
+		},
+		created(){
+			if(this.menus.length){
+				this.menuTreeData = [this.menus[0]];
+			}
+		},
 	}
 </script>
 
