@@ -18,7 +18,6 @@
 					:highlight-current="true" 
 					default-expand-all
 					@node-click="nodeclick" >
-						<slot>test11111</slot>
 						<div class="custom-tree-node" :data-id="data.id" :class="{'is-current': data.id === currentMenu.id}" slot-scope="{ node, data }">
 					        <span><i class="iconfont" :class="node.icon"></i>&nbsp;&nbsp;{{ node.label }}</span>
 					        <span>
@@ -50,7 +49,7 @@
 			</el-row>
 		</div>
 		<!--修改角色模态框-->
-		<menu-manager-dialog :dialogMenu="dialogMenu" @updata-current-menu="updataCurrentMenu"></menu-manager-dialog>
+		<menu-manager-dialog :dialogMenu="dialogMenu" @update-current-menu="updateCurrentMenu"></menu-manager-dialog>
 	</section>
 </template>
 
@@ -60,7 +59,10 @@
 	import menuManagerDialog from '@/components/menuManager/dialogMenu'
 	import menuManagerRightPart from '@/components/menuManager/rightPart'
 	import { queryAllRole, getMenuRole, deleteMenu, getMenus } from '@/api/menuManager.js'
+	import { initPage } from '@/mixins/initPage.js'
 	export default {
+		name: 'menuManager',
+		mixins: [initPage],
 		components:{
 			menuManagerAside, menuManagerDialog, menuManagerRightPart
 		},
@@ -88,14 +90,19 @@
 					label: 'text'
 				},
 				menuTreeData:[],
-				currentMenu: '',
+				currentMenuId:0,
 			}
 		},
 		computed:{
 			...mapGetters(['menus','user'])
 		},
-
-		
+		created(){
+			if(this.menus.length){
+				this.menuTreeData = [this.menus[0]];
+			}
+			this.$nextTick(function(){
+			})
+		},
 		watch: {
 			'menus':function(arr){
 				if(arr && arr.length){
@@ -170,8 +177,14 @@
 				let record = this.menus.find(item => item.id == menuId);
 				this.menuTreeData = [record];
 			},
-
-			
+			async nodeclick(menus){
+				console.log(menus)
+				this.MenuDetail.menuName = menus.text;
+				this.currentMenuId = menus.id;
+				let data = await getMenuRole({menuId:menus.id});
+				this.MenuDetail.roleList = data.roleList;
+				this.MenuDetail.roleArr = data.roleIds;
+			},
 			append(data) {
 				this.addMenu();
 		    },
