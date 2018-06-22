@@ -108,11 +108,12 @@ export default {
 					.iconfont {.hide;}
 					span {.db;  }
 				}
-
 			}
 			.el-submenu__title+ul{.hide;};
-			
 		}
 	}
+}
+@media (max-width: 767px){
+	.el-aside.packup {width: 0px !important;}
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
 	<el-header :class="theme">
-		<div class="logo"><router-link :to="{path: '/about.go'}">点餐后台管理</router-link></div>
+		<div class="logo" :class="asideState"><router-link :to="{path: '/about.go'}">点餐后台管理</router-link></div>
 		<span class="arrow" @click="toggleLeftMenus"><i class="el-icon-menu"></i></span>
 		<div class="menu">
 			<ul>
@@ -30,7 +30,6 @@ import {getCookie, setCookie, delCookie} from '@/utils/Cookie'
 import { getMenus } from '@/api/common.js'
 export default {
 	name: 'Header',
-	
 	data() {
 		return {
 			currentID: '',
@@ -68,6 +67,9 @@ export default {
 	.logo {
 		.fl;.tc;.w(220px);.h(60px);.lh(60px); color: @white;.fs(20px); border-right: 1px solid rgba(238, 241, 146, 0.3); 
 		a {color: @white;}
+		&.packup {.w(80px);
+			a{.hide}
+		}
 	}
 	.arrow {.fl; .h(60px);.lh(60px);.p(0 15px); color: @white; cursor: pointer;}
 	.menu {
@@ -84,5 +86,8 @@ export default {
 			.iconfont {color: @white;}
 		}
 	}
+}
+@media (max-width: 767px){
+	.logo.packup {.w(0px) !important;}
 }
 </style>

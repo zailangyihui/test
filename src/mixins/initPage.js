@@ -25,6 +25,7 @@ const initPage = {
             var width = document.body.clientWidth;
             if (width <= 767) {
                 this.isOpenAside = false;
+                this.$store.commit('UPDATA_ASIDE_MENUS_STATE', 'packup');
             } else {
                 this.isOpenAside = true;
             }
@@ -87,4 +88,4 @@ const initPage = {
         })
     }
 }
-export { initPage }
+export { initPage };

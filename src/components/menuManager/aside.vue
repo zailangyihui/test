@@ -20,7 +20,7 @@
             <div class="btn-add-menu" @click="$emit('add-menu')"><i class="el-icon-plus"></i>&nbsp;&nbsp;添加新菜单</div>
         </div>
         <span class="btnToggle" @click="toggleAside">
-            <i :class="isopen ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"></i>
+            <i :class="isOpenAside ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"></i>
         </span>
     </div>
 </template>
@@ -29,10 +29,10 @@
     import { deleteMenu, getMenus } from '@/api/menuManager.js'
     export default {
         name:'MenuManagerAside',
+        props:['isOpenAside'],
         data(){
             return {
                 currentId:0,
-                isopen:true,
                 menuList: []
             }
         },
@@ -83,12 +83,7 @@
                 }
             },
             toggleAside(){
-                this.isopen = !this.isopen
-                if(this.isopen){
-                    this.$emit('toggle-aside', 'open')
-                }else{
-                    this.$emit('toggle-aside', 'close')
-                }
+                this.$emit('toggle-aside', !this.isOpenAside);
             },
             delMenu(menuId){
 				this.$confirm('您确定删除该菜单吗?', '提示', {

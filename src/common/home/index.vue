@@ -12,7 +12,6 @@
 				</el-col>
 			</el-main>
 			<el-footer style="display: none" :class="packupClass">Footer</el-footer>
-			
 		</el-container>
 	</div>
 </template>
@@ -66,5 +65,8 @@ export default {
 }
 .el-footer {.fix; bottom: 0; left: 220px; right: 0; .h(30px);.lh(30px);
 	&.packup {left: 80px;}
+}
+@media (max-width: 767px){
+	.el-main.packup,.el-footer.packup {left: 0px !important;}
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
 	<section class="menuManager" :class="isOpenAside ? '' : 'close'">
 		<menu-manager-aside 
+		:isOpenAside="isOpenAside"
 		@add-menu="addMenu"
 		@editor-menu="editorMenu"
 		@show-menu-tree="showMenuTree"
@@ -8,17 +9,9 @@
 
 		<div class="main">
 			<el-row :gutter="30">
-				<el-col :span="14">
-					<el-tree 
-					ref="tree"
-					:data="menuTreeData" 
-					node-key="id"
-					:expand-on-click-node="false" 
-					:props="defaultProps" 
-					:highlight-current="true" 
-					default-expand-all
-					@node-click="nodeclick" >
-						<div class="custom-tree-node" :data-id="data.id" :class="{'is-current': data.id === currentMenu.id}" slot-scope="{ node, data }">
+				<el-col :xs="24" :sm="14">
+					<el-tree :data="menuTreeData" ref="menuTree" node-key="id" :check-strictly="true" :expand-on-click-node="false" :props="defaultProps" :highlight-current="true" default-expand-all @node-click="nodeclick">
+						<span class="custom-tree-node" :class="data.id == currentMenuId ? 'is-current' : ''" slot-scope="{ node, data }">
 					        <span><i class="iconfont" :class="node.icon"></i>&nbsp;&nbsp;{{ node.label }}</span>
 					        <span>
 							  <el-button
@@ -43,7 +36,7 @@
 					      </div>
 					</el-tree>
 				</el-col>
-				<el-col :span="10">
+				<el-col :xs="0" :sm="10">
 					<menu-manager-right-part :MenuDetail="MenuDetail"></menu-manager-right-part>
 				</el-col>
 			</el-row>
@@ -84,7 +77,6 @@
 					roleArr:[],
 					roleList:[],
 				},
-				isOpenAside: true,
 				defaultProps: {
 					children: 'children',
 					label: 'text'
@@ -114,25 +106,9 @@
 			},
 		},
 		methods: {
-			async deleteMenu(menuId){
-				let data = await deleteMenu({'menuId': menuId});
-				this.$message({
-					message: data.message,
-					type: 'success'
-				});
-				this.updateMenu();
-			},
-			async updateMenu(){
-                let data = await getMenus({uid: this.user.id});
-				this.$store.commit('UPDATA_MENUS', data.data.treeMenu);
-            },
-            async nodeclick(menus){
-				console.log(menus)
-				this.MenuDetail.menuName = menus.text;
-				this.currentMenu = menus;
-				let data = await getMenuRole({menuId:menus.id});
-				this.MenuDetail.roleList = data.roleList;
-				this.MenuDetail.roleArr = data.roleIds;
+			updateCurrentMenu(menuName){
+				this.MenuDetail.menuName = menuName;
+				this.getMenuRoleList();
 			},
 			async addMenu(parentId) {
 				console.log('parentId', parentId)
@@ -167,11 +143,7 @@
 				this.dialogMenu.menuIcon = "icon-Management";
 			},
 			toggleAside(data){
-				if(data==='open'){
-					this.isOpenAside = true
-				}else{
-					this.isOpenAside = false
-				}
+				this.isOpenAside = data;
 			},
 			showMenuTree(menuId){
 				let record = this.menus.find(item => item.id == menuId);
@@ -212,16 +184,19 @@
 					});
 				});
 			},
-			updataCurrentMenu(){
-				console.log('updata-current-menu:')
-				this.$refs.tree.setCurrentNode(this.currentMenu)
+			async deleteMenu(menuId){
+				let data = await deleteMenu({'menuId': menuId});
+				this.$message({
+					message: data.message,
+					type: 'success'
+				});
+				this.updateMenu();
 			},
-		},
-		created(){
-			if(this.menus.length){
-				this.menuTreeData = [this.menus[0]];
-			}
-		},
+			async updateMenu(){
+                let data = await getMenus({uid: this.user.id});
+				this.$store.commit('UPDATA_MENUS', data.data.treeMenu);
+            }
+		}
 	}
 </script>
 

@@ -82,4 +82,7 @@ export default {
 	}
 	&.packup {left: 80px;}
 }
+@media (max-width: 767px){
+	.el-nav.packup {left: 0px !important;}
+}
 </style>

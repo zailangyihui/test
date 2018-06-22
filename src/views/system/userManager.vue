@@ -1,6 +1,7 @@
 <template>
 	<section class="userManager" :class="isOpenAside ? 'open' : 'close'">
 		<user-manager-aside class="el-aside-usermanager"
+		:isOpenAside="isOpenAside"
 		v-on:toggle-aside="toggleAside"
 		v-on:query-user-list="getTableData"
 		v-on:updata-role-tree="updataRoleTree" 
@@ -182,11 +183,7 @@ export default {
 	        });
 		},
 		toggleAside(data){
-			if(data==='open'){
-				this.isOpenAside = true
-			}else{
-				this.isOpenAside = false
-			}
+			this.isOpenAside = data;
 		},
 	},
 	created() {
@@ -204,10 +201,11 @@ export default {
 		}
 		.el-pagination {text-align: center; margin-top: 10px; }
 	}
-	
-	&.close {
-		.el-aside-usermanager {width: 0 !important; overflow: inherit;}
-		.main {margin-left:0px !important; }
+	&.close{
+		.main {margin-left: 0px;}
+		.aside{width: 0 !important;
+			.aside_content{width: 0 !important;}
+		}
 	}
 }
 </style>
