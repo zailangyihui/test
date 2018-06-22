@@ -7,7 +7,7 @@
 			<el-form-item label="角色名称" prop="role" v-else>
 				<el-input v-model="inputRoleName" auto-complete="off" :disabled="false"></el-input>
 			</el-form-item>
-			<el-form-item label="权限分配" prop="quanxian" v-loading="dialogRole.loading" class="maxheight">
+			<el-form-item label="权限分配" prop="quanxian" v-loading="dialogRole.loading">
 				<el-tree
 				  :data="dialogRole.menuTree"
 				  show-checkbox
@@ -16,7 +16,7 @@
 				  default-expand-all
 				  :default-checked-keys="dialogRole.checkedTree"
 				  :check-strictly="true"
-				  :props="defaultProps">
+				  :props="defaultProps" class="maxheight">
 				</el-tree>
 			</el-form-item>
 		</el-form>
@@ -80,6 +80,10 @@ export default {
 </script>
 <style lang="less" scoped>
 @media (max-width: 767px){
-	.el-dialog {width: 100% !important; }
+	.el-dialog {width: 100% !important;height: 100% !important; }
+}
+.maxheight {
+	max-height: 400px;
+	overflow-y: auto
 }
 </style>

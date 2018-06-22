@@ -1,8 +1,8 @@
 import { mapGetters } from 'vuex'
-import {getCookie} from '@/utils/Cookie'
+import { getCookie } from '@/utils/Cookie'
 import store from 'vuex'
 const initPage = {
-    data(){
+    data() {
         return {
             isOpenAside: true,
             pagenavi: {
@@ -21,32 +21,45 @@ const initPage = {
         ...mapGetters(['user', 'theme', 'asideState']),
     },
     methods: {
-        initLayout(){
+        initLayout() {
             var width = document.body.clientWidth;
-            if(width <= 767){
+            if (width <= 767) {
                 this.isOpenAside = false;
             } else {
                 this.isOpenAside = true;
             }
         },
-        initUser(){
-            if(this.user.id === undefined){
+        initUser() {
+            if (this.user.id === undefined) {
                 let userStr = getCookie('userinfo')
-                if(userStr != 'undefined') {
+                if (userStr != 'undefined') {
                     let userinfo = JSON.parse(userStr);
                     console.log('[cookie:user]', userinfo)
                     this.$store.commit('UPDATA_USER', userinfo)
-                }else{
-                    this.$router.push({path: '/'})
+                } else {
+                    this.$router.push({ path: '/' })
                 }
             }
         },
-
+        initTheme() {
+            let themeName = localStorage.getItem('ADMIN-THEME')
+            if (themeName !== null && themeName !== '') {
+                this.$store.commit('UPDATA_THEME', themeName);
+                if (this.themeList) {
+                    this.themeList.forEach((item) => {
+                        item.selected = false
+                        if (item.bgclass === themeName) {
+                            item.selected = true
+                        }
+                    })
+                }
+            }
+        },
         onChangePageSize(val) {
             this.pagenavi.size = val;
-            if(Math.ceil(this.pagenavi.total / this.pagenavi.size) >= this.pagenavi.current) {
+            if (Math.ceil(this.pagenavi.total / this.pagenavi.size) >= this.pagenavi.current) {
                 this.getTableData({
-                    'pageCount': (this.pagenavi.current - 1) * this.pagenavi.size, 
+                    'pageCount': (this.pagenavi.current - 1) * this.pagenavi.size,
                     'pageSize': this.pagenavi.size,
                 });
             }
@@ -59,16 +72,17 @@ const initPage = {
             })
         },
     },
-    created(){
+    created() {
         console.log('[vuex:user]', this.user.id)
-        this.initUser()
-        this.$nextTick(function(){
+        this.initUser();
+        this.initTheme();
+        this.$nextTick(function() {
             var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-                this.initLayout();
-                var self = this;
-                window.onresize=function(){  
-                    self.initLayout()
-                }  
+            this.initLayout();
+            var self = this;
+            window.onresize = function() {
+                self.initLayout()
+            }
             this.tableheight = height - 280;
         })
     }

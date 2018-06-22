@@ -64,7 +64,7 @@ export default {
 </script>
 <style lang="less" scoped>
 @import '../assets/css/base.less';
-.el-header{ .fix; top: 0; left: 0px; right: 0; z-index: 2;.h(60px); background: @blue; color: #333; .tc;.ovh;
+.el-header{ .p(0); .fix; top: 0; left: 0px; right: 0; z-index: 2;.h(60px); background: @blue; color: #333; .tc;.ovh;
 	.logo {
 		.fl;.tc;.w(220px);.h(60px);.lh(60px); color: @white;.fs(20px); border-right: 1px solid rgba(238, 241, 146, 0.3); 
 		a {color: @white;}

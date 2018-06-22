@@ -177,11 +177,14 @@
 				let record = this.menus.find(item => item.id == menuId);
 				this.menuTreeData = [record];
 			},
-			async nodeclick(menus){
+			nodeclick(menus){
 				console.log(menus)
 				this.MenuDetail.menuName = menus.text;
 				this.currentMenuId = menus.id;
-				let data = await getMenuRole({menuId:menus.id});
+				this.getMenuRoleList();
+			},
+			async getMenuRoleList(){
+				let data = await getMenuRole({menuId:this.currentMenuId});
 				this.MenuDetail.roleList = data.roleList;
 				this.MenuDetail.roleArr = data.roleIds;
 			},
@@ -232,18 +235,17 @@
 			label {font-weight: 400;.fs(14px);color: #606266;.mb(5px);.dib;
 			}
 		} 
-		.custom-tree-node {flex: 1;display: flex;align-items: center;justify-content: space-between;.fs(14px);.pr(8px);}
-		.el-tree-node__content {.m(5px 0);border: 1px solid #e4eaec;.h(30px);line-height: 30px;border-radius: 3px;
+		.custom-tree-node {flex: 1;display: flex;align-items: center;justify-content: space-between;.fs(14px);.pr(8px);
+			&.is-current {color: #20A0FF;}
 		}
+		.el-tree-node__content {.m(5px 0);border: 1px solid #e4eaec;.h(30px);line-height: 30px;border-radius: 3px;}
 	}
 	&.close{
 		.main {margin-left: 0px;}
 		.aside,.aside_content{width: 0 !important;}
 	}
 }
-.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
-	color: #20A0FF;
-}
+
 @media (max-width: 767px){
 	.el-dialog {width: 100% !important; }
 }

@@ -82,7 +82,7 @@ export default {
 @menusCurrent: #50A8F6;
 .el-aside {.fix; top: 60px; left: 0; bottom: 0; z-index: 1; width: 220px!important; .tl; background-color: @bgMenus;
 	.types { .h(56px);.lh(56px);.tl;.pl(45px); color: @white; }
-	.el-menu { background: @bgMenus;
+	.el-menu { background: @bgMenus;border:0;
 		.el-menu-item {.w(100%);.rel; color:@menusColor;
 			.iconfont{.fs(16px);.mr(5px);}
 			&.active{ color: #50A8F6 !important;

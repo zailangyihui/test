@@ -11,9 +11,6 @@
 				</template>
 			</el-col>
 		</div>
-
-  		<el-button class="btn-save" type="primary" size="small" @click="saveTheme()">保存</el-button>
-
 	</div>
 </template>
 
@@ -50,22 +47,11 @@ export default {
 			this.themeList[index]["selected"] = true;
 			this.selectedTheem = bgclass
 			this.$store.commit('UPDATA_THEME', bgclass);
-		},
-		saveTheme(){
 			localStorage.setItem('ADMIN-THEME', this.selectedTheem)
-		}
+		},
 	},
 	created(){
-		let themeName = localStorage.getItem('ADMIN-THEME')
-		if(themeName!==null && themeName!== ''){
-			this.$store.commit('UPDATA_THEME', themeName);
-			this.themeList.forEach((item)=>{
-				item.selected = false
-				if(item.bgclass === themeName){
-					item.selected = true
-				}
-			})
-		}
+		
 	}
 }
 </script>

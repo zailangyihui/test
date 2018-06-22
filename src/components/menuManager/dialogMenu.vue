@@ -80,7 +80,7 @@
             async updateMenu(){
                 let data = await getMenus({uid: this.user.id});
                 this.$store.commit('UPDATA_MENUS', data.data.treeMenu);
-                this.$emit('update-current-menu');
+                this.$emit('update-current-menu',this.dialogMenu.menuName);
             }
         },
     }

@@ -17,12 +17,12 @@
 						    <el-tab-pane label="密码修改" name="password">
 						    	<el-row :gutter="20" class="inputbox">
 						    		<el-col :span="10" :offset="4">
-						    			<el-input v-model="oldpassword" placeholder="请输入原来的密码" size="small"></el-input>
-						    			<el-input v-model="newpassword" placeholder="请输入新密码" size="small"></el-input>
-						    			<el-input v-model="newpassword2" placeholder="请再次输入新密码" size="small"></el-input>
+						    			<el-input v-model="psdData.oldPsd" placeholder="请输入原来的密码" size="small"></el-input>
+						    			<el-input v-model="psdData.newPsd" placeholder="请输入新密码" size="small"></el-input>
+						    			<el-input v-model="psdData.newPsdAgain" placeholder="请再次输入新密码" size="small"></el-input>
 								  	</el-col>
 								  	<el-col :span="20" :offset="4">
-								  		<el-button type="primary" size="small">保存</el-button>
+								  		<el-button type="primary" size="small" @click="updatePassword">保存</el-button>
 								  	</el-col>
 						    	</el-row>
 						    </el-tab-pane>
@@ -36,24 +36,41 @@
 
 <script>
 import { initPage } from '@/mixins/initPage.js'
+import { modifyPassword } from '@/api/userManager.js'
 export default {
 	name: 'AccountInfo',
 	mixins:[initPage],
 	data() {
 		return {
 			tabValue: 'password',
-			oldpassword:"",
-			newpassword:"",
-			newpassword2:""
+			psdData:{
+				oldPsd:"",
+				newPsd:"",
+				newPsdAgain:""
+			}
 		}
 	},
 	methods: {
-		selectTheme(index,bgclass){
-			for(var id in this.theme){
-				this.theme[id].selected = false;
+		async updatePassword(){
+			if(!this.psdData.oldPsd){
+				this.$message.error('请输入旧密码！');
+				return;
 			}
-			this.theme[index]["selected"] = true;
-			this.$emit('changebg',bgclass)
+			if(!this.psdData.newPsd){
+				this.$message.error('请输入新密码！');
+				return;
+			}
+			if(!this.psdData.newPsdAgain){
+				this.$message.error('请再次输入新密码！');
+				return;
+			}
+			if(this.psdData.newPsd != this.psdData.newPsdAgain){
+				this.$message.error('两次密码不一致！');
+				return;
+			}
+			let data = await modifyPassword(this.psdData);
+			this.$message({message: data.message,type: 'success'});
+			this.psdData = {oldPsd:"",newPsd:"",newPsdAgain:""};
 		},
 		onChangeTab(){
 			
