@@ -12,6 +12,7 @@ export const topMenus = (state) => {
     return state.menus.map((item, index) => {
         return {
             id: item.id,
+            menuRem: item.menuRem,
             text: item.text,
             icon: item.icon,
             url: item.url,

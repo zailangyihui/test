@@ -122,7 +122,8 @@
 				this.initMenuDialog();
 				this.dialogMenu.title = "添加菜单";
 				this.dialogMenu.type = "add";
-				this.dialogMenu.menuUrl = '/';
+                this.dialogMenu.menuUrl = '/';
+                this.dialogMenu.menuRem = '';
 				this.dialogMenu.parentId = parentId;
 				let list = await queryAllRole();
 				this.dialogMenu.roleIds = [];
@@ -135,7 +136,8 @@
 				this.dialogMenu.title = "修改菜单";
 				this.dialogMenu.type = "editor";
 				this.dialogMenu.menuId = menuData.id;
-				this.dialogMenu.menuUrl = menuData.url;
+                this.dialogMenu.menuUrl = menuData.url;
+                this.dialogMenu.menuRem = menuData.menuRem;
 				let data = await getMenuRole({menuId:menuData.id});
 				this.dialogMenu.roleArr = data.roleList;
 				this.dialogMenu.roleIds = data.roleIds;
@@ -146,7 +148,7 @@
 				this.dialogMenu.roleArr = [];
 				this.dialogMenu.loading = true;
 				this.dialogMenu.show = true;
-				this.dialogMenu.menuName = '';
+                this.dialogMenu.menuName = '';
 				this.dialogMenu.menuIcon = "icon-Management";
 			},
 			toggleAside(data){
@@ -162,6 +164,8 @@
                 this.getMenuRoleList();
 			},
 			nodeclick(menus){
+                console.log("menus",menus)
+                this.MenuDetail.menuRem = menus.menuRem;
 				this.MenuDetail.menuName = menus.text;
 				this.currentMenuId = menus.id;
 				this.getMenuRoleList();
@@ -205,8 +209,9 @@
                 let data = await getMenus({uid: this.user.id});
 				this.$store.commit('UPDATA_MENUS', data.data.treeMenu);
             },
-            updateCurrentMenu(menuName){
-				this.MenuDetail.menuName = menuName;
+            updateCurrentMenu(menuData){
+                this.MenuDetail.menuName = menuData.menuName;
+                this.MenuDetail.menuRem = menuData.menuRem;
 				this.getMenuRoleList();
 			},
             changeCurrentId(id){

@@ -61,10 +61,12 @@
                 this.findCurrentId(menuid);
             },
             initMenuData(arr){
+                console.log(arr,"==============")
                 this.menuList = arr.map((item, index)=>{
                     return {
                         url: item.url,
                         icon: item.icon,
+                        menuRem: item.menuRem,
                         id: item.id,
                         text: item.text,
                         selected: index === 0 ? 1 : 0,

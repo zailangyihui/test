@@ -28,6 +28,14 @@
                 </el-option>
             </el-select>
         </div>
+        <div class="from-item">
+            <label>功能介绍：</label>
+            <el-input
+            type="textarea"
+            :rows="3"
+            v-model="dialogMenu.menuRem">
+            </el-input>
+        </div>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogMenu.show = false">取 消</el-button>
             <el-button type="primary" @click="entry">确定</el-button>
@@ -61,7 +69,7 @@
 				    return;
                 }
                 if(this.dialogMenu.type == "add"){
-                    let data = await addMenu({'menuName':this.dialogMenu.menuName,'roleIds':this.dialogMenu.roleIds,'menuIcon':this.dialogMenu.menuIcon,'parentId':this.dialogMenu.parentId});
+                    let data = await addMenu({'menuName':this.dialogMenu.menuName,'roleIds':this.dialogMenu.roleIds,'menuIcon':this.dialogMenu.menuIcon,'parentId':this.dialogMenu.parentId,'menuRem':this.dialogMenu.menuRem});
                     this.$emit('change-current-id',data.data);
                     this.$message({
                         message: data.message,
@@ -69,7 +77,7 @@
                     });
                     this.updateMenu();
                 } else if(this.dialogMenu.type == "editor"){
-                    let data = await editorMenu({'menuId': this.dialogMenu.menuId,'menuIcon':this.dialogMenu.menuIcon, 'menuName': this.dialogMenu.menuName, 'roleIds': this.dialogMenu.roleIds});
+                    let data = await editorMenu({'menuId': this.dialogMenu.menuId,'menuIcon':this.dialogMenu.menuIcon, 'menuName': this.dialogMenu.menuName, 'roleIds': this.dialogMenu.roleIds,'menuRem':this.dialogMenu.menuRem});
                     this.$message({
                         message: data.message,
                         type: 'success'
@@ -81,7 +89,7 @@
             async updateMenu(){
                 let data = await getMenus({uid: this.user.id});
                 this.$store.commit('UPDATA_MENUS', data.data.treeMenu);
-                this.$emit('update-current-menu',this.dialogMenu.menuName);
+                this.$emit('update-current-menu',this.dialogMenu);
             }
         },
     }

@@ -21,6 +21,14 @@
                 </el-option>
             </el-select>
         </div>
+        <div class="from-item">
+            <label>功能介绍：</label>
+            <el-input
+            type="textarea"
+            :rows="3"
+            v-model="MenuDetail.menuRem">
+            </el-input>
+        </div>
     </div>
 </template>
 <script>
