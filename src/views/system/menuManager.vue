@@ -2,11 +2,13 @@
 	<section class="menuManager" :class="isOpenAside ? '' : 'close'">
 		<menu-manager-aside 
 		:isOpenAside="isOpenAside"
+        :cid = "cid"
 		@add-menu="addMenu"
 		@editor-menu="editorMenu"
 		@show-menu-tree="showMenuTree"
-		@toggle-aside="toggleAside"></menu-manager-aside>
-
+		@toggle-aside="toggleAside"
+        @clasr-form="clearForm"
+        @change-res-from="changeResFrom"></menu-manager-aside>
 		<div class="main">
 			<el-row :gutter="30">
 				<el-col :xs="24" :sm="14">
@@ -17,13 +19,13 @@
 							  <el-button
 					            type="text"
 					            size="mini"
-					            @click.stop="editorMenu(data)">
+					            @click="editorMenuEvent(data)">
 					            编辑
 					          </el-button>
 					          <el-button
 					            type="text"
 					            size="mini"
-					            @click.stop="() => addMenu(data.pid)">
+					            @click="() => addMenuEvent(data.id)">
 					            添加
 					          </el-button>
 					          <el-button
@@ -33,7 +35,7 @@
 					            删除
 					          </el-button>
 					        </span>
-					      </div>
+					      </span>
 					</el-tree>
 				</el-col>
 				<el-col :xs="0" :sm="10">
@@ -42,7 +44,7 @@
 			</el-row>
 		</div>
 		<!--修改角色模态框-->
-		<menu-manager-dialog :dialogMenu="dialogMenu" @update-current-menu="updateCurrentMenu"></menu-manager-dialog>
+		<menu-manager-dialog :dialogMenu="dialogMenu" @update-current-menu="updateCurrentMenu" @change-current-id="changeCurrentId"></menu-manager-dialog>
 	</section>
 </template>
 
@@ -82,7 +84,9 @@
 					label: 'text'
 				},
 				menuTreeData:[],
-				currentMenuId:0,
+                currentMenuId:0,
+                cid:0,
+                resFrom:''
 			}
 		},
 		computed:{
@@ -106,12 +110,15 @@
 			},
 		},
 		methods: {
-			updateCurrentMenu(menuName){
-				this.MenuDetail.menuName = menuName;
-				this.getMenuRoleList();
-			},
+            addMenuEvent(parentId){
+                this.resFrom = '';
+                this.addMenu(parentId);
+            },
+            editorMenuEvent(menuData){
+                this.resFrom = '';
+                this.editorMenu(menuData);
+            },
 			async addMenu(parentId) {
-				console.log('parentId', parentId)
 				this.initMenuDialog();
 				this.dialogMenu.title = "添加菜单";
 				this.dialogMenu.type = "add";
@@ -145,12 +152,16 @@
 			toggleAside(data){
 				this.isOpenAside = data;
 			},
-			showMenuTree(menuId){
-				let record = this.menus.find(item => item.id == menuId);
-				this.menuTreeData = [record];
+			showMenuTree(menu){
+				let record = this.menus.find(item => item.id == menu.id);
+                this.menuTreeData = [record];
+                if(this.resFrom == "aside"){
+                    this.currentMenuId = menu.id;
+                    this.MenuDetail.menuName = menu.text;
+                }
+                this.getMenuRoleList();
 			},
 			nodeclick(menus){
-				console.log(menus)
 				this.MenuDetail.menuName = menus.text;
 				this.currentMenuId = menus.id;
 				this.getMenuRoleList();
@@ -160,9 +171,6 @@
 				this.MenuDetail.roleList = data.roleList;
 				this.MenuDetail.roleArr = data.roleIds;
 			},
-			append(data) {
-				this.addMenu();
-		    },
 		    remove(node, data) {
 				this.$confirm('您确定删除该菜单吗?', '提示', {
 					confirmButtonText: '确定',
@@ -185,7 +193,8 @@
 				});
 			},
 			async deleteMenu(menuId){
-				let data = await deleteMenu({'menuId': menuId});
+                let data = await deleteMenu({'menuId': menuId});
+                this.MenuDetail.menuName = '';
 				this.$message({
 					message: data.message,
 					type: 'success'
@@ -195,6 +204,22 @@
 			async updateMenu(){
                 let data = await getMenus({uid: this.user.id});
 				this.$store.commit('UPDATA_MENUS', data.data.treeMenu);
+            },
+            updateCurrentMenu(menuName){
+				this.MenuDetail.menuName = menuName;
+				this.getMenuRoleList();
+			},
+            changeCurrentId(id){
+                this.currentMenuId = id;
+                if(!this.dialogMenu.parentId){
+                    this.cid = id;
+                } 
+            },
+            changeResFrom(data){
+                this.resFrom = data;
+            },
+            clearForm(){
+                this.MenuDetail.menuName = '';
             }
 		}
 	}

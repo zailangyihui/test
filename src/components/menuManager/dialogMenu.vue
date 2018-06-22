@@ -62,6 +62,7 @@
                 }
                 if(this.dialogMenu.type == "add"){
                     let data = await addMenu({'menuName':this.dialogMenu.menuName,'roleIds':this.dialogMenu.roleIds,'menuIcon':this.dialogMenu.menuIcon,'parentId':this.dialogMenu.parentId});
+                    this.$emit('change-current-id',data.data);
                     this.$message({
                         message: data.message,
                         type: 'success'

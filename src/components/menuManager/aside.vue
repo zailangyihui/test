@@ -11,13 +11,13 @@
                         <i class="iconfont" :class="item.icon"></i>&nbsp;&nbsp;
                         <span class="menuname">{{item.text}}</span>
                         <span class="operate">
-                            <i class="iconfont icon-bianji" @click.stop="$emit('editor-menu',item)"></i>&nbsp;<i class="el-icon-close" @click.stop="delMenu(item.id)"></i>
+                            <i class="iconfont icon-bianji" @click="editorMenu(item)"></i>&nbsp;<i class="el-icon-close" @click.stop="delMenu(item.id)"></i>
                         </span>
                     </li>
                 </ul>
             </div>
             <div class="line"></div>
-            <div class="btn-add-menu" @click="$emit('add-menu')"><i class="el-icon-plus"></i>&nbsp;&nbsp;添加新菜单</div>
+            <div class="btn-add-menu" @click="addMenu"><i class="el-icon-plus"></i>&nbsp;&nbsp;添加新菜单</div>
         </div>
         <span class="btnToggle" @click="toggleAside">
             <i :class="isOpenAside ? 'el-icon-arrow-left' : 'el-icon-arrow-right'"></i>
@@ -29,7 +29,7 @@
     import { deleteMenu, getMenus } from '@/api/menuManager.js'
     export default {
         name:'MenuManagerAside',
-        props:['isOpenAside'],
+        props:['isOpenAside','cid'],
         data(){
             return {
                 currentId:0,
@@ -42,10 +42,22 @@
         watch: {
             'topMenus': function(arr){
                 this.initMenuData(arr);
+            },
+            'cid': function(id){
+                this.currentId = id;
             }
         },
         methods:{
+            editorMenu(item){
+                this.$emit('change-res-from',"aside");
+                this.$emit('editor-menu',item);
+            },
+            addMenu(){
+                this.$emit('change-res-from',"aside");
+                this.$emit('add-menu');
+            },
             changeMenuTree(menuid){
+                this.$emit('change-res-from',"aside");
                 this.findCurrentId(menuid);
             },
             initMenuData(arr){
@@ -74,7 +86,7 @@
                         flag = false;
                         item.selected = 1;
                         this.currentId = item.id;
-                        this.$emit('show-menu-tree',item.id);
+                        this.$emit('show-menu-tree',item);
                     }
                 })
                 if(flag && this.menuList && this.menuList[0]){
@@ -106,6 +118,7 @@
             },
             async updateMenu(){
                 let data = await getMenus({uid: this.user.id});
+                this.$emit('clasr-form');
                 this.$store.commit('UPDATA_MENUS', data.data.treeMenu);
             }
         },

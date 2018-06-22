@@ -21,9 +21,6 @@
                 </el-option>
             </el-select>
         </div>
-        <!-- <div class="from-item">
-            <el-button type="primary" class="btn-save-menu" size="small">保存</el-button>
-        </div> -->
     </div>
 </template>
 <script>
