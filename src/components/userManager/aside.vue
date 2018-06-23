@@ -168,5 +168,9 @@ export default {
 		.btnToggle {display: block; }
 	}
 }
-
+&.close{
+	.aside{
+		.aside_content{width: 0 !important;}
+	}
+}
 </style>
